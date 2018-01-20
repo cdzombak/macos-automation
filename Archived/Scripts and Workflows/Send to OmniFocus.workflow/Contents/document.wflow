@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>AMApplicationBuild</key>
+	<string>409</string>
+	<key>AMApplicationVersion</key>
+	<string>2.5</string>
+	<key>AMDocumentVersion</key>
+	<string>2</string>
+	<key>actions</key>
+	<array>
+		<dict>
+			<key>action</key>
+			<dict>
+				<key>AMAccepts</key>
+				<dict>
+					<key>Container</key>
+					<string>List</string>
+					<key>Optional</key>
+					<true/>
+					<key>Types</key>
+					<array>
+						<string>com.apple.applescript.object</string>
+					</array>
+				</dict>
+				<key>AMActionVersion</key>
+				<string>1.0.2</string>
+				<key>AMApplication</key>
+				<array>
+					<string>Automator</string>
+				</array>
+				<key>AMParameterProperties</key>
+				<dict>
+					<key>source</key>
+					<dict/>
+				</dict>
+				<key>AMProvides</key>
+				<dict>
+					<key>Container</key>
+					<string>List</string>
+					<key>Types</key>
+					<array>
+						<string>com.apple.applescript.object</string>
+					</array>
+				</dict>
+				<key>ActionBundlePath</key>
+				<string>/System/Library/Automator/Run AppleScript.action</string>
+				<key>ActionName</key>
+				<string>Run AppleScript</string>
+				<key>ActionParameters</key>
+				<dict>
+					<key>source</key>
+					<string>on run {input, parameters}		(*
+OmniFocus Selected Mail Messages.applescript
+	Copyright (c) 2015 Jonathan 'Wolf' Rentzsch: http://rentzsch.com
+	Some rights reserved: http://opensource.org/licenses/mit
+  
+Pure AppleScript reimplementation of OmniGroup's Clip-o-Tron for OmniFocus.
+
+Hopefully this implementation will be more resilient against OS X, Mail, and OmniFocus updates.
+Successfully tested against OS X 10.10.1, OmniFocus 1.10.6, and OmniFocus 2.0.4.
+
+References:
+&lt;http://daringfireball.net/2007/12/message_urls_leopard_mail&gt;
+&lt;http://forums.omnigroup.com/showthread.php?t=30754&gt;
+&lt;http://shawnblanc.net/box/smarter_clip-o-tron.txt&gt;
+ *)		tell application "Mail"		set _sel to the selection		repeat with _msg in _sel			set _msgSubject to _msg's subject			set _msgBody to _msg's content			set _msgSender to _msg's sender			set _msgURL to "message://&lt;" &amp; _msg's message id &amp; "&gt;"			tell application "OmniFocus"				tell quick entry					set _task to make new inbox task with properties {name:_msgSubject, note:_msgBody}					tell note of _task						insert "From: " &amp; _msgSender &amp; "  Original Message" &amp; (ASCII character 10) &amp; (ASCII character 10) at before paragraphs						set value of attribute "link" of style of characters -1 thru -17 of first paragraph to _msgURL					end tell				end tell			end tell		end repeat	end tell		tell application "OmniFocus"		tell quick entry to open	end tell	tell application "System Events" to keystroke tab		return inputend run</string>
+				</dict>
+				<key>BundleIdentifier</key>
+				<string>com.apple.Automator.RunScript</string>
+				<key>CFBundleVersion</key>
+				<string>1.0.2</string>
+				<key>CanShowSelectedItemsWhenRun</key>
+				<false/>
+				<key>CanShowWhenRun</key>
+				<true/>
+				<key>Category</key>
+				<array>
+					<string>AMCategoryUtilities</string>
+				</array>
+				<key>Class Name</key>
+				<string>RunScriptAction</string>
+				<key>InputUUID</key>
+				<string>0B46D318-80CE-4324-91E9-D4557A408FE3</string>
+				<key>Keywords</key>
+				<array>
+					<string>Run</string>
+				</array>
+				<key>OutputUUID</key>
+				<string>40EA2DA1-3BC1-4AC1-87BC-2B628D3D1D9B</string>
+				<key>UUID</key>
+				<string>41AC9797-9187-4FEA-A269-D4160045A50F</string>
+				<key>UnlocalizedApplications</key>
+				<array>
+					<string>Automator</string>
+				</array>
+				<key>arguments</key>
+				<dict>
+					<key>0</key>
+					<dict>
+						<key>default value</key>
+						<string>on run {input, parameters}
+	
+	(* Your script goes here *)
+	
+	return input
+end run</string>
+						<key>name</key>
+						<string>source</string>
+						<key>required</key>
+						<string>0</string>
+						<key>type</key>
+						<string>0</string>
+						<key>uuid</key>
+						<string>0</string>
+					</dict>
+				</dict>
+				<key>conversionLabel</key>
+				<integer>0</integer>
+				<key>isViewVisible</key>
+				<true/>
+				<key>location</key>
+				<string>527.000000:316.000000</string>
+				<key>nibPath</key>
+				<string>/System/Library/Automator/Run AppleScript.action/Contents/Resources/Base.lproj/main.nib</string>
+			</dict>
+			<key>isViewVisible</key>
+			<true/>
+		</dict>
+	</array>
+	<key>connectors</key>
+	<dict/>
+	<key>workflowMetaData</key>
+	<dict>
+		<key>serviceApplicationBundleID</key>
+		<string>com.apple.mail</string>
+		<key>serviceApplicationPath</key>
+		<string>/Applications/Mail.app</string>
+		<key>serviceInputTypeIdentifier</key>
+		<string>com.apple.Automator.nothing</string>
+		<key>serviceOutputTypeIdentifier</key>
+		<string>com.apple.Automator.nothing</string>
+		<key>serviceProcessesInput</key>
+		<integer>0</integer>
+		<key>workflowTypeIdentifier</key>
+		<string>com.apple.Automator.servicesMenu</string>
+	</dict>
+</dict>
+</plist>
