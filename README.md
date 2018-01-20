@@ -17,9 +17,9 @@ Where documentation exists, it's located in a README in each folder, adjacent to
 
 ## See Also
 
-* [rsync-match](https://github.com/cdzombak/rsync-match) lives in `~/opt/bin/` but is not included in this repository.
+* [rsync-match](https://github.com/cdzombak/rsync-match) if the canonical source for the `curie-match` script in `~/opt/bin/`.
 * [finder-atom](https://github.com/cdzombak/finder-atom) is the canonical source for this script.
-* My dotfiles & Hammerspoon configuration — not currently online
+* My dotfiles & Hammerspoon configuration — not currently online.
 
 ## Subsumed Repositories
 
@@ -30,4 +30,4 @@ This repository subsumes the scripts I still use from two older repositories:
 
 ## License
 
-Where a script includes a link to an original source, that source's license applies. For code written by @cdzombak, the WTFPL applies (see LICENSE).
+Where a script includes a link to an original source, that source's license applies. For code written by [@cdzombak](https://github.com/cdzombak/), the WTFPL applies (see LICENSE).
