@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>AMApplicationBuild</key>
+	<string>409.1</string>
+	<key>AMApplicationVersion</key>
+	<string>2.5</string>
+	<key>AMDocumentVersion</key>
+	<string>2</string>
+	<key>actions</key>
+	<array>
+		<dict>
+			<key>action</key>
+			<dict>
+				<key>AMAccepts</key>
+				<dict>
+					<key>Container</key>
+					<string>List</string>
+					<key>Optional</key>
+					<true/>
+					<key>Types</key>
+					<array>
+						<string>com.apple.applescript.object</string>
+					</array>
+				</dict>
+				<key>AMActionVersion</key>
+				<string>1.0.2</string>
+				<key>AMApplication</key>
+				<array>
+					<string>Automator</string>
+				</array>
+				<key>AMParameterProperties</key>
+				<dict>
+					<key>source</key>
+					<dict/>
+				</dict>
+				<key>AMProvides</key>
+				<dict>
+					<key>Container</key>
+					<string>List</string>
+					<key>Types</key>
+					<array>
+						<string>com.apple.applescript.object</string>
+					</array>
+				</dict>
+				<key>ActionBundlePath</key>
+				<string>/System/Library/Automator/Run AppleScript.action</string>
+				<key>ActionName</key>
+				<string>Run AppleScript</string>
+				<key>ActionParameters</key>
+				<dict>
+					<key>source</key>
+					<string>-- Put Dropbox folder path with trailing slash in the quotes, eg. "Dropbox/Public/"property _publicFolderPOSIXPath : POSIX path of (path to home folder) &amp; "Dropbox/Public/"-- Put your web-accessible Dropbox folder URL with a trailing slash in the quotes, eg. "http://dropbox.dzombak.com/"property _publicFolderURL : "http://dropbox.dzombak.com/"-- adapted from http://qsapp.com/wiki/Dropbox_public_link_(AppleScript)on findAndReplace(_toFind, _toReplace, _theText)	set _astid to AppleScript's text item delimiters	try		set AppleScript's text item delimiters to _toFind		set textItems to _theText's text items		set AppleScript's text item delimiters to _toReplace		tell textItems to set _editedText to beginning &amp; _toReplace &amp; rest		set AppleScript's text item delimiters to _astid		return _editedText	on error a number b		set AppleScript's text item delimiters to _astid		error a number b	end tryend findAndReplace-- adapted from http://harvey.nu/applescript_url_encode_routine.html via http://brettterpstra.com/2011/02/04/launchbar-actions-for-url-encoding-and-decoding/-- there's a corresponding urldecode function there, but we don't need it for this script.on urlencode_except_forward_slash(theText)	set theTextEnc to ""	repeat with eachChar in characters of theText		set useChar to eachChar		set eachCharNum to ASCII number of eachChar		if (eachCharNum ≠ 42) and (eachCharNum ≠ 47) and (eachCharNum ≠ 95) and (eachCharNum &lt; 45 or eachCharNum &gt; 46) and (eachCharNum &lt; 48 or eachCharNum &gt; 57) and (eachCharNum &lt; 65 or eachCharNum &gt; 90) and (eachCharNum &lt; 97 or eachCharNum &gt; 122) then			set firstDig to round (eachCharNum / 16) rounding down			set secondDig to eachCharNum mod 16			if firstDig &gt; 9 then				set aNum to firstDig + 55				set firstDig to ASCII character aNum			end if			if secondDig &gt; 9 then				set aNum to secondDig + 55				set secondDig to ASCII character aNum			end if			set numHex to ("%" &amp; (firstDig as string) &amp; (secondDig as string)) as string			set useChar to numHex		end if		set theTextEnc to theTextEnc &amp; useChar as string	end repeat	return theTextEncend urlencode_except_forward_slashon run {input, parameters}	try		repeat with _anItem in input
+			tell application "Finder"				set _path to POSIX path of (_anItem as text)				-- TODO: warn if the given path isn't in the Dropbox Public folder				set _fileName to my findAndReplace(_publicFolderPOSIXPath, "", _path)				set _fileNameEncoded to my urlencode_except_forward_slash(_fileName)				set _url to _publicFolderURL &amp; _fileNameEncoded								set the clipboard to _url				-- Need a delay between copying to the clipboard				if (count of input) &gt; 1 then display dialog "This script only works with one file."			end tell		end repeat			on error a number b		display dialog a	end try		return _urlend run</string>
+				</dict>
+				<key>BundleIdentifier</key>
+				<string>com.apple.Automator.RunScript</string>
+				<key>CFBundleVersion</key>
+				<string>1.0.2</string>
+				<key>CanShowSelectedItemsWhenRun</key>
+				<false/>
+				<key>CanShowWhenRun</key>
+				<true/>
+				<key>Category</key>
+				<array>
+					<string>AMCategoryUtilities</string>
+				</array>
+				<key>Class Name</key>
+				<string>RunScriptAction</string>
+				<key>InputUUID</key>
+				<string>A6036271-E27D-4CAF-AAEF-31B63CC4E589</string>
+				<key>Keywords</key>
+				<array>
+					<string>Run</string>
+				</array>
+				<key>OutputUUID</key>
+				<string>376FA97F-3931-4914-9B77-97A9175B8DBB</string>
+				<key>UUID</key>
+				<string>5D19A411-374E-4D0B-A66D-57AE19EF13E6</string>
+				<key>UnlocalizedApplications</key>
+				<array>
+					<string>Automator</string>
+				</array>
+				<key>arguments</key>
+				<dict>
+					<key>0</key>
+					<dict>
+						<key>default value</key>
+						<string>on run {input, parameters}
+	
+	(* Your script goes here *)
+	
+	return input
+end run</string>
+						<key>name</key>
+						<string>source</string>
+						<key>required</key>
+						<string>0</string>
+						<key>type</key>
+						<string>0</string>
+						<key>uuid</key>
+						<string>0</string>
+					</dict>
+				</dict>
+				<key>conversionLabel</key>
+				<integer>0</integer>
+				<key>isViewVisible</key>
+				<true/>
+				<key>location</key>
+				<string>527.000000:316.000000</string>
+				<key>nibPath</key>
+				<string>/System/Library/Automator/Run AppleScript.action/Contents/Resources/Base.lproj/main.nib</string>
+			</dict>
+			<key>isViewVisible</key>
+			<true/>
+		</dict>
+	</array>
+	<key>connectors</key>
+	<dict/>
+	<key>variables</key>
+	<array>
+		<dict>
+			<key>UUID</key>
+			<string>CB8CDB99-7D43-4178-BAB6-6F6BE57B33C9</string>
+			<key>identifier</key>
+			<string>com.apple.Automator.Variable.Path</string>
+			<key>name</key>
+			<string>Path</string>
+			<key>value</key>
+			<string>~/Desktop</string>
+		</dict>
+	</array>
+	<key>workflowMetaData</key>
+	<dict>
+		<key>serviceInputTypeIdentifier</key>
+		<string>com.apple.Automator.fileSystemObject</string>
+		<key>serviceOutputTypeIdentifier</key>
+		<string>com.apple.Automator.nothing</string>
+		<key>serviceProcessesInput</key>
+		<integer>0</integer>
+		<key>workflowTypeIdentifier</key>
+		<string>com.apple.Automator.servicesMenu</string>
+	</dict>
+</dict>
+</plist>
