@@ -27,3 +27,7 @@ This repository subsumes the scripts I still use from two older repositories:
 * [osx-services](https://github.com/cdzombak/osx-services)
 * [omni-applescripts](https://github.com/cdzombak/omni-applescripts)
 
+## License
+
+Where a script includes a link to an original source, that source's license applies. For code written by @cdzombak, the WTFPL applies (see LICENSE).
+
