@@ -5,16 +5,17 @@ set -eu
 git fetch origin
 git fetch origin --tags
 git remote prune origin
+git branch -vv | grep 'origin/cdz/.*: gone]' | awk '{print $1}' | xargs git branch -D
 git prune
 
 echo ""
 echo "Local branches:"
-git branch
+git branch -vv
 
 echo ""
-echo "Remote cdz/ branches:"
+echo "Remote personal branches:"
 if git branch -r | grep "cdz/" > /dev/null; then
-	git branch -r | grep "cdz/"
+	git branch -rv --list "*cdz/*"
 else
 	echo "  (none)"
 fi
