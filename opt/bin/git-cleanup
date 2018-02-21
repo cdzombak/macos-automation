@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+set -eu
+
+git fetch origin
+git fetch origin --tags
+git remote prune origin
+git prune
+
+echo ""
+echo "Local branches:"
+git branch
+
+echo ""
+echo "Remote cdz/ branches:"
+if git branch -r | grep "cdz/" > /dev/null; then
+	git branch -r | grep "cdz/"
+else
+	echo "  (none)"
+fi
