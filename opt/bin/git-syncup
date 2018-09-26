@@ -14,8 +14,8 @@ git branch -vv
 
 echo ""
 echo "Remote personal branches:"
-if git branch -r | grep "cdz/" > /dev/null; then
-	git branch -rv --list "*cdz/*"
+if git branch -r | grep "cdz[\+/]" > /dev/null; then
+	git branch -rv --list "*cdz[\+/]*"
 else
 	echo "  (none)"
 fi
