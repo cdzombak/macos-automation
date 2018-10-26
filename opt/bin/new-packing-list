@@ -9,3 +9,9 @@ DS=$(date +%Y-%m)
 
 cp "Packing List Template.ooutline" "$DS $NEW_UUID Packing List.ooutline"
 open "$DS $NEW_UUID Packing List.ooutline"
+
+osascript -e 'tell application "iTerm"
+	tell current tab of current window
+		close
+	end tell
+end tell'
