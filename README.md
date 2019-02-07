@@ -1,4 +1,4 @@
-# OS X/macOS Automation
+# OS X/macOS Automation (+ shell scripts & etc.)
 
 These are scripts, services, and other small utilities which I use to make life on macOS easier. I run them via:
 
@@ -18,8 +18,7 @@ Where documentation exists, it's located in a README in each folder, adjacent to
 ## See Also
 
 * [rsync-match](https://github.com/cdzombak/rsync-match) is the canonical source for the `curie-match` script in `~/opt/bin/`.
-* [finder-atom](https://github.com/cdzombak/finder-atom) is the canonical source for this script.
-* My dotfiles & Hammerspoon configuration — not currently online.
+* My [dotfiles](https://github.com/cdzombak/dotfiles) & [Hammerspoon configuration](https://github.com/cdzombak/dotfiles/tree/master/hammerspoon/.hammerspoon)
 
 ## Subsumed Repositories
 
