@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>AMApplicationBuild</key>
-	<string>444.39</string>
+	<string>444.42</string>
 	<key>AMApplicationVersion</key>
 	<string>2.9</string>
 	<key>AMDocumentVersion</key>
@@ -133,9 +133,9 @@
 					<string>#!/bin/bash
 
 f="$(mktemp /tmp/cdz.copy-to-sublime.XXXXXX)"
-pbpaste -Prefer txt &gt; "$f"
+LC_CTYPE=UTF-8 LANG=en_US.UTF-8 pbpaste -Prefer txt &gt; "$f"
 "/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl" -w "$f"
-cat "$f" | LC_CTYPE=UTF-8 pbcopy
+cat "$f" | LC_CTYPE=UTF-8 LANG=en_US.UTF-8 pbcopy
 /usr/bin/osascript -e "display notification \"📋 Copied!\""
 rm -f "$f"</string>
 					<key>CheckedForUserDefaultShell</key>
@@ -252,7 +252,7 @@ rm -f "$f"</string>
 				<key>isViewVisible</key>
 				<true/>
 				<key>location</key>
-				<string>469.500000:370.000000</string>
+				<string>469.500000:569.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Run Shell Script.action/Contents/Resources/Base.lproj/main.nib</string>
 			</dict>
@@ -262,7 +262,7 @@ rm -f "$f"</string>
 	</array>
 	<key>connectors</key>
 	<dict>
-		<key>D83C5EBD-0CB1-4B29-AC6C-6360B1259FB8</key>
+		<key>28F1C19A-470B-4A19-8AF4-D1CFED4EBA88</key>
 		<dict>
 			<key>from</key>
 			<string>732CB498-4178-40E8-8704-2ADEAEB2489C - 732CB498-4178-40E8-8704-2ADEAEB2489C</string>
@@ -276,8 +276,6 @@ rm -f "$f"</string>
 		<dict/>
 		<key>applicationPaths</key>
 		<array/>
-		<key>customImageFileExtension</key>
-		<string>png</string>
 		<key>inputTypeIdentifier</key>
 		<string>com.apple.Automator.text</string>
 		<key>outputTypeIdentifier</key>
