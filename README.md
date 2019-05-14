@@ -17,7 +17,6 @@ Where documentation exists, it's located in a README in each folder, adjacent to
 
 ## See Also
 
-* [rsync-match](https://github.com/cdzombak/rsync-match) is the canonical source for the `curie-match` script in `~/opt/bin/`.
 * My [dotfiles](https://github.com/cdzombak/dotfiles) & [Hammerspoon configuration](https://github.com/cdzombak/dotfiles/tree/master/hammerspoon/.hammerspoon)
 
 ## Subsumed Repositories
