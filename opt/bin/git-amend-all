@@ -1,0 +1,4 @@
+#!/bin/bash
+set -e
+git add -A
+git commit --amend --no-edit
