@@ -16,7 +16,7 @@ cd "$SCRIPT_DIR/.." || exit 1
 echo "Working from $(pwd) ..."
 
 # Install files under ~/opt, assumed to all be single files
-find opt -type f | while IFS="" read -r FILE; do
+find opt -type f | grep --color=never -v -e "\.gitkeep" | while IFS="" read -r FILE; do
   echo ""
   echo "$FILE  ..."
   SRC="$(pwd)/$FILE"
@@ -52,7 +52,7 @@ find opt -type f | while IFS="" read -r FILE; do
 done
 
 # Install non-.workflow files in ~/Library/...:
-find Library -type f | grep --color=never -v -e "\.workflow$" -e "\.workflow/" -e "\.gitkeep" | while IFS="" read -r FILE; do
+find Library -type f | grep --color=never -v -e "\.workflow$" -e "\.workflow/" -e "\.gitkeep" -e "\.DS_Store" | while IFS="" read -r FILE; do
   echo ""
   echo "$FILE  ..."
   SRC="$(pwd)/$FILE"
