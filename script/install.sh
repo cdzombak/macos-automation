@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 
-# set env var FORCE={anything non-empty} to replace whatever's at the destination directory
-FORCE=${FORCE:-}
+# set env var FORCE=true to replace whatever's at the destination directory
+FORCE=${FORCE:false}
+if [[ "$FORCE" == "true" ]]; then
+  FORCE=true
+fi
 
 set -uo pipefail
 IFS=$'\n\t'
@@ -18,7 +21,7 @@ echo "Working from $(pwd) ..."
 
 show_force_message() {
   echo ""
-  echo -e "${white}To resolve conflicts by replacing destination files by those from this repo, run this script with the environment variable ${yellow}FORCE${white} set to anything non-empty, eg. ${yellow}FORCE=true $0${_reset}"
+  echo -e "${white}To resolve conflicts by replacing destination files by those from this repo, run this script with the environment variable ${yellow}FORCE=true${white}.${_reset}"
 }
 
 # Install files under ~/opt, assumed to all be single files
@@ -30,8 +33,8 @@ find opt -type f | grep --color=never -v -e "\.gitkeep" | while IFS="" read -r F
   mkdir -p "$HOME/$(dirname "$FILE")"
 
   if [[ -r "$DEST" ]]; then
-    if [[ -n "$FORCE" ]]; then
-      echo "  Removing extant file at $DEST (FORCE='$FORCE')"
+    if [ "$FORCE" = true ]; then
+      echo "  Removing extant file at $DEST (FORCE=$FORCE)"
       rm -f "$DEST"
     else
       if diff -q "$SRC" "$DEST" > /dev/null; then
@@ -67,8 +70,8 @@ find Library -type f | grep --color=never -v -e "\.workflow$" -e "\.workflow/" -
   mkdir -p "$HOME/$(dirname "$FILE")"
 
   if [[ -r "$DEST" ]]; then
-    if [[ -n "$FORCE" ]]; then
-      echo "  Removing extant file at $DEST (FORCE='$FORCE')"
+    if [ "$FORCE" = true ]; then
+      echo "  Removing extant file at $DEST (FORCE=$FORCE)"
       rm -f "$DEST"
     else
       if diff -q "$SRC" "$DEST" > /dev/null; then
@@ -97,8 +100,8 @@ find Library -type d | grep --color=never "\.workflow$" | while IFS="" read -r F
   mkdir -p "$HOME/$(dirname "$FILE")"
 
   if [[ -d "$DEST" ]]; then
-    if [[ -n "$FORCE" ]]; then
-      echo "  Removing extant .workflow directory at $DEST (FORCE='$FORCE')"
+    if [ "$FORCE" = true ]; then
+      echo "  Removing extant .workflow directory at $DEST (FORCE=$FORCE)"
       rm -rf "$DEST"
     else
       if diff -qrN "$SRC" "$DEST" > /dev/null; then
