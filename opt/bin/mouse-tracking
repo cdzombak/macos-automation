@@ -7,6 +7,7 @@ function usage_exit() {
 	echo "     - n may be an integer 0-9"
 	echo "     - descriptor may be one of the following:"
 	echo "         'anker' for wired Anker mouse at 1600 DPI (its higher DPI setting)"
+	echo "                 or wireless Anker mouse at 1200 DPI (its middle DPI setting)"
 	echo ""
 	exit 1
 }
