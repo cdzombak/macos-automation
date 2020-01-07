@@ -120,3 +120,11 @@ find Library -type d | grep --color=never "\.workflow$" | while IFS="" read -r F
     cecho "✔ Installed at $DEST" $green
   fi
 done
+
+cecho "--- Removing unused scripts/etc. ---" $white
+echo ""
+
+if [ -e "$HOME/opt/bin/curie-match" ]; then
+  echo "Legacy curie-match script..."
+  trash "$HOME/opt/bin/curie-match"
+fi
