@@ -15,6 +15,11 @@ if [ "$(uname)" != "Darwin" ]; then
   exit 2
 fi
 
+cecho "----                             ----" $white
+cecho "---- osx-automation installation ----" $white
+cecho "----                             ----" $white
+echo ""
+
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 cd "$SCRIPT_DIR/.." || exit 1
 echo "Working from $(pwd) ..."
@@ -121,10 +126,13 @@ find Library -type d | grep --color=never "\.workflow$" | while IFS="" read -r F
   fi
 done
 
+echo ""
 cecho "--- Removing unused scripts/etc. ---" $white
 echo ""
 
 if [ -e "$HOME/opt/bin/curie-match" ]; then
   echo "Legacy curie-match script..."
   trash "$HOME/opt/bin/curie-match"
+else
+  echo "Nothing to do."
 fi
