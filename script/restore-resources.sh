@@ -21,12 +21,13 @@ DIRS=(
 for DIR in "${DIRS[@]}"; do
   find "$(pwd)/$DIR" -iname '*.scpt' -type f -print0 | while read -r -d $'\0' file
   do
-    if [[ $(xattr "$file") == *"com.apple.ResourceFork"* ]]; then
-      if [ -f "$file.rsrc" ]; then
-        echo "$file ..."
-        Rez "$file.rsrc" -append -o "$file"
-        SetFile -a C "$file"
-      fi
+    if [ -f "$file.rsrc" ]; then
+      echo "$file ..."
+      Rez "$file.rsrc" -append -o "$file"
+      SetFile -a C "$file"
+    else
+      echo "no .rsrc found for $file"
     fi
   done
 done
+
