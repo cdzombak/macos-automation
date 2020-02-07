@@ -3,13 +3,14 @@
 set -uo pipefail
 IFS=$'\n\t'
 
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+source "$SCRIPT_DIR/lib/cecho"
+
 if [ "$(uname)" != "Darwin" ]; then
   cecho "Skipping osx-automation resource extraction because not on macOS" $red
   exit 2
 fi
 
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-source "$SCRIPT_DIR/lib/cecho"
 cd "$SCRIPT_DIR/.." || exit 1
 
 DIRS=(

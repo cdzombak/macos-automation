@@ -9,13 +9,13 @@ fi
 set -uo pipefail
 IFS=$'\n\t'
 
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+source "$SCRIPT_DIR/lib/cecho"
+
 if [ "$(uname)" != "Darwin" ]; then
   cecho "Skipping osx-automation installation because not on macOS" $red
   exit 2
 fi
-
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-source "$SCRIPT_DIR/lib/cecho"
 
 cecho "----                             ----" $white
 cecho "---- osx-automation installation ----" $white
