@@ -128,6 +128,10 @@ find Library -type d | grep --color=never "\.workflow$" | while IFS="" read -r F
 done
 
 echo ""
+cecho "/usr/local/bin/imgcat  ..." $cyan
+ln -s "$HOME/opt/bin/imgcat" /usr/local/bin/imgcat
+
+echo ""
 cecho "--- Removing unused scripts/etc. ---" $white
 echo ""
 
