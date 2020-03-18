@@ -11,7 +11,11 @@ if [ "$(uname)" != "Darwin" ]; then
   exit 2
 fi
 
+cecho "---- osx-automation: extract resource forks ----" $white
+echo ""
+
 cd "$SCRIPT_DIR/.." || exit 1
+echo "Working in $(pwd) ..."
 
 DIRS=(
   "Library/Application Scripts"

@@ -23,7 +23,7 @@ cecho "----                             ----" $white
 echo ""
 
 cd "$SCRIPT_DIR/.." || exit 1
-echo "Working from $(pwd) ..."
+echo "Working in $(pwd) ..."
 
 show_force_message() {
   echo ""
@@ -129,7 +129,12 @@ done
 
 echo ""
 cecho "/usr/local/bin/imgcat  ..." $cyan
-ln -s "$HOME/opt/bin/imgcat" /usr/local/bin/imgcat
+if [[ ! -e /usr/local/bin/imgcat ]]; then
+  ln -s "$HOME/opt/bin/imgcat" /usr/local/bin/imgcat
+  cecho "✔ Installed." $green
+else
+ cecho "✔ Already installed." $green
+fi
 
 echo ""
 cecho "--- Removing unused scripts/etc. ---" $white
