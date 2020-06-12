@@ -28,4 +28,4 @@ This repository subsumes the scripts I still use from two older repositories:
 
 ## License
 
-Where a script includes a link to an original source, that source's license applies. For code written by [@cdzombak](https://github.com/cdzombak/), the WTFPL applies (see LICENSE).
+Where a script includes a link to an original source, that source's license applies. For code written by [@cdzombak](https://github.com/cdzombak/), the MIT license applies (see LICENSE).
