@@ -77,8 +77,6 @@
 				</array>
 				<key>arguments</key>
 				<dict/>
-				<key>conversionLabel</key>
-				<integer>0</integer>
 			</dict>
 		</dict>
 		<dict>
@@ -132,7 +130,11 @@
 					<key>COMMAND_STRING</key>
 					<string>for f in "$@"
 do
-    /usr/local/bin/mogrify -format jpg "$f"
+	if [ -e /usr/local/bin/mogrify ]; then    
+		/usr/local/bin/mogrify -format jpg "$f"
+	elif [ -e /opt/homebrew/bin/mogrify ]; then
+		/opt/homebrew/bin/mogrify -format jpg "$f"
+	fi
 done</string>
 					<key>CheckedForUserDefaultShell</key>
 					<true/>
@@ -243,12 +245,10 @@ done</string>
 						<string>4</string>
 					</dict>
 				</dict>
-				<key>conversionLabel</key>
-				<integer>0</integer>
 				<key>isViewVisible</key>
 				<true/>
 				<key>location</key>
-				<string>581.500000:370.000000</string>
+				<string>505.500000:370.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Run Shell Script.action/Contents/Resources/Base.lproj/main.nib</string>
 			</dict>
@@ -258,7 +258,7 @@ done</string>
 	</array>
 	<key>connectors</key>
 	<dict>
-		<key>977C6B64-56F2-4FAA-AC1B-0E12D55E216B</key>
+		<key>ECC0CFA2-C680-415B-B1F6-C1D62E3E4A08</key>
 		<dict>
 			<key>from</key>
 			<string>BB0F5671-61BF-46CC-B7BA-7DB40935A9C9 - BB0F5671-61BF-46CC-B7BA-7DB40935A9C9</string>
