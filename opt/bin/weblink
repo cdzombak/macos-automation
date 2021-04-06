@@ -1,0 +1,55 @@
+#/usr/bin/env bash
+set -eo pipefail
+
+# ref: http://hints.macworld.com/article.php?story=20040111200114634
+
+# read args into variables:
+url="$1"
+fname="$2"
+force=false
+if [ "$1" == "-f" ]; then
+    force=true
+    url="$2"
+    fname="$3"
+fi
+
+# check for proper usage/print help
+if [ "$url" == "" ] || [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
+    echo "usage: weblink [-f] URL [TITLE]"
+    echo ""
+    echo "Creates a .url file in the current location which opens your browser to the given URL."
+    echo "The given title is used as the filename; else the page's title is fetched and used as the filename."
+    echo ""
+    if [ "$url" == "" ]; then
+        exit 1
+    else
+        exit 0
+    fi
+fi
+
+# fetch page title if necessary:
+if [ "$fname" == "" ]; then
+    if ! command -v pup >/dev/null; then
+        echo "'pup' not found; it is required to fetch page titles automatically."
+        echo "Install it with \`brew install pup\`."
+    else
+        fname=$(curl -sL "$url" | pup 'head title:first-of-type text{}' | tr -cd 'A-Za-z0-9_- ' | awk '{$1=$1};1')
+    fi
+fi
+
+# if we couldn't use page title as filename, fallback to a stripped-down version of the URL:
+if [ "$fname" == "" ]; then
+    fname=$(echo "$url" | tr -cd 'A-Za-z0-9_- ' | awk '{$1=$1};1')
+fi
+
+# check if the file exists already:
+fname="./""$fname"".url"
+if [ -e "$fname" ] && [ "$force" != true ] ; then
+    echo "error: file '$fname' exists"
+    exit 2
+fi
+
+cat << EOF > "$fname"
+[InternetShortcut]
+URL=$url
+EOF
