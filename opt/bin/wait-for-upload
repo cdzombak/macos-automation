@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [ $# -ne 1 ]; then
+    echo "usage: wait-for-upload URL"
+    exit 1
+fi
+
+while ! curl -s -f --head "$1" ; do
+    sleep 5
+done
+
+terminal-notifier -message "$1" -title "✅ Upload is Ready"
