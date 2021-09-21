@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>AMApplicationBuild</key>
+	<string>509</string>
+	<key>AMApplicationVersion</key>
+	<string>2.10</string>
+	<key>AMDocumentVersion</key>
+	<string>2</string>
+	<key>actions</key>
+	<array>
+		<dict>
+			<key>action</key>
+			<dict>
+				<key>AMAccepts</key>
+				<dict>
+					<key>Container</key>
+					<string>List</string>
+					<key>Optional</key>
+					<true/>
+					<key>Types</key>
+					<array>
+						<string>com.apple.cocoa.string</string>
+					</array>
+				</dict>
+				<key>AMActionVersion</key>
+				<string>2.0.3</string>
+				<key>AMApplication</key>
+				<array>
+					<string>Automator</string>
+				</array>
+				<key>AMParameterProperties</key>
+				<dict>
+					<key>COMMAND_STRING</key>
+					<dict/>
+					<key>CheckedForUserDefaultShell</key>
+					<dict/>
+					<key>inputMethod</key>
+					<dict/>
+					<key>shell</key>
+					<dict/>
+					<key>source</key>
+					<dict/>
+				</dict>
+				<key>AMProvides</key>
+				<dict>
+					<key>Container</key>
+					<string>List</string>
+					<key>Types</key>
+					<array>
+						<string>com.apple.cocoa.string</string>
+					</array>
+				</dict>
+				<key>ActionBundlePath</key>
+				<string>/System/Library/Automator/Run Shell Script.action</string>
+				<key>ActionName</key>
+				<string>Run Shell Script</string>
+				<key>ActionParameters</key>
+				<dict>
+					<key>COMMAND_STRING</key>
+					<string>set -eo pipefail
+
+# ref: http://hints.macworld.com/article.php?story=20040111200114634
+
+projectName="$(osascript &lt;&lt;'END'
+on trim_line(this_text, trim_chars, trim_indicator)	-- 0 = beginning, 1 = end, 2 = both	set x to the length of the trim_chars	-- TRIM BEGINNING	if the trim_indicator is in {0, 2} then		repeat while this_text begins with the trim_chars			try				set this_text to (characters (x + 1) thru -1 of this_text) as string			on error				-- the text contains nothing but the trim characters				return ""			end try		end repeat	end if	-- TRIM ENDING	if the trim_indicator is in {1, 2} then		repeat while this_text ends with the trim_chars			try				set this_text to (characters 1 thru -(x + 1) of this_text) as string			on error				-- the text contains nothing but the trim characters				return ""			end try		end repeat	end if	return this_textend trim_lineif the clipboard does not start with "bear://" then	error "The clipboard does not contain a Bear link."end if	set previousClipboard to the clipboard	tell application "Bear" to activatetell application "System Events"	tell process "Bear"		keystroke "c" using command down
+		keystroke "h" using command down	end tellend tell	delay 0.2	set theParagraphs to paragraphs of (the clipboard)set the clipboard to previousClipboard	-- project name is the first line, minus Markdown headerset theProjectName to trim_line(item 1 of theParagraphs, "# ", 0)return theProjectName
+END
+)"
+
+fname=$(echo "$projectName" | tr -cd 'A-Za-z0-9_- ' | awk '{$1=$1};1')
+url="$(pbpaste)"
+
+# if we couldn't use page title as filename, fallback to a stripped-down version of the URL:
+if [ "$fname" == "" ]; then
+    fname=$(echo "$url" | tr -cd 'A-Za-z0-9_- ' | awk '{$1=$1};1')
+fi
+
+# check if the file exists already:
+fname="./""$fname"".url"
+if [ -e "$fname" ] &amp;&amp; [ "$force" != true ] ; then
+    echo "error: file '$fname' exists"
+    exit 2
+fi
+
+fname="$1/$fname"
+
+cat &lt;&lt; EOF &gt; "$fname"
+[InternetShortcut]
+URL=$url
+EOF
+
+osascript &lt;&lt;END
+use framework "Foundation"
+use framework "AppKit"
+use scripting additions
+
+set sourcePath to "/Applications/Bear.app/Contents/Resources/Bear Document.icns"
+set destPath to "$fname"
+set imageData to (current application's NSImage's alloc()'s initWithContentsOfFile:sourcePath)
+(current application's NSWorkspace's sharedWorkspace()'s setIcon:imageData forFile:destPath options:2)
+END
+</string>
+					<key>CheckedForUserDefaultShell</key>
+					<true/>
+					<key>inputMethod</key>
+					<integer>1</integer>
+					<key>shell</key>
+					<string>/bin/bash</string>
+					<key>source</key>
+					<string></string>
+				</dict>
+				<key>BundleIdentifier</key>
+				<string>com.apple.RunShellScript</string>
+				<key>CFBundleVersion</key>
+				<string>2.0.3</string>
+				<key>CanShowSelectedItemsWhenRun</key>
+				<false/>
+				<key>CanShowWhenRun</key>
+				<true/>
+				<key>Category</key>
+				<array>
+					<string>AMCategoryUtilities</string>
+				</array>
+				<key>Class Name</key>
+				<string>RunShellScriptAction</string>
+				<key>InputUUID</key>
+				<string>9E4E96A7-A2CF-4CBD-91BF-B964E84D7D17</string>
+				<key>Keywords</key>
+				<array>
+					<string>Shell</string>
+					<string>Script</string>
+					<string>Command</string>
+					<string>Run</string>
+					<string>Unix</string>
+				</array>
+				<key>OutputUUID</key>
+				<string>D591B58C-CACD-425E-AD47-2638E17DF67C</string>
+				<key>UUID</key>
+				<string>95DD2CB9-E1CC-41FA-9C54-D7F2ACB6FE5F</string>
+				<key>UnlocalizedApplications</key>
+				<array>
+					<string>Automator</string>
+				</array>
+				<key>arguments</key>
+				<dict>
+					<key>0</key>
+					<dict>
+						<key>default value</key>
+						<integer>0</integer>
+						<key>name</key>
+						<string>inputMethod</string>
+						<key>required</key>
+						<string>0</string>
+						<key>type</key>
+						<string>0</string>
+						<key>uuid</key>
+						<string>0</string>
+					</dict>
+					<key>1</key>
+					<dict>
+						<key>default value</key>
+						<false/>
+						<key>name</key>
+						<string>CheckedForUserDefaultShell</string>
+						<key>required</key>
+						<string>0</string>
+						<key>type</key>
+						<string>0</string>
+						<key>uuid</key>
+						<string>1</string>
+					</dict>
+					<key>2</key>
+					<dict>
+						<key>default value</key>
+						<string></string>
+						<key>name</key>
+						<string>source</string>
+						<key>required</key>
+						<string>0</string>
+						<key>type</key>
+						<string>0</string>
+						<key>uuid</key>
+						<string>2</string>
+					</dict>
+					<key>3</key>
+					<dict>
+						<key>default value</key>
+						<string></string>
+						<key>name</key>
+						<string>COMMAND_STRING</string>
+						<key>required</key>
+						<string>0</string>
+						<key>type</key>
+						<string>0</string>
+						<key>uuid</key>
+						<string>3</string>
+					</dict>
+					<key>4</key>
+					<dict>
+						<key>default value</key>
+						<string>/bin/sh</string>
+						<key>name</key>
+						<string>shell</string>
+						<key>required</key>
+						<string>0</string>
+						<key>type</key>
+						<string>0</string>
+						<key>uuid</key>
+						<string>4</string>
+					</dict>
+				</dict>
+				<key>isViewVisible</key>
+				<integer>1</integer>
+				<key>location</key>
+				<string>597.000000:1057.000000</string>
+				<key>nibPath</key>
+				<string>/System/Library/Automator/Run Shell Script.action/Contents/Resources/Base.lproj/main.nib</string>
+			</dict>
+			<key>isViewVisible</key>
+			<integer>1</integer>
+		</dict>
+	</array>
+	<key>connectors</key>
+	<dict/>
+	<key>workflowMetaData</key>
+	<dict>
+		<key>applicationBundleID</key>
+		<string>com.apple.finder</string>
+		<key>applicationBundleIDsByPath</key>
+		<dict>
+			<key>/System/Library/CoreServices/Finder.app</key>
+			<string>com.apple.finder</string>
+		</dict>
+		<key>applicationPath</key>
+		<string>/System/Library/CoreServices/Finder.app</string>
+		<key>applicationPaths</key>
+		<array>
+			<string>/System/Library/CoreServices/Finder.app</string>
+		</array>
+		<key>inputTypeIdentifier</key>
+		<string>com.apple.Automator.fileSystemObject.folder</string>
+		<key>outputTypeIdentifier</key>
+		<string>com.apple.Automator.nothing</string>
+		<key>presentationMode</key>
+		<integer>15</integer>
+		<key>processesInput</key>
+		<false/>
+		<key>serviceApplicationBundleID</key>
+		<string>com.apple.finder</string>
+		<key>serviceApplicationPath</key>
+		<string>/System/Library/CoreServices/Finder.app</string>
+		<key>serviceInputTypeIdentifier</key>
+		<string>com.apple.Automator.fileSystemObject.folder</string>
+		<key>serviceOutputTypeIdentifier</key>
+		<string>com.apple.Automator.nothing</string>
+		<key>serviceProcessesInput</key>
+		<false/>
+		<key>systemImageName</key>
+		<string>NSTouchBarDocuments</string>
+		<key>useAutomaticInputType</key>
+		<false/>
+		<key>workflowTypeIdentifier</key>
+		<string>com.apple.Automator.servicesMenu</string>
+	</dict>
+</dict>
+</plist>
