@@ -16,7 +16,7 @@ Keys for sizes are converted to human-readable numbers (e.g. 25.3MB)
 Keys for dates are converted to localized short date format
 
 === Config
-:use_imgcat: If you have iTerm2 and imgcat installed, print out an icon
+:show_icon: If you have imgcat or chafa installed, print out an icon
 :keys:       The keys to parse and their "pretty" form for printing Output in
              the order listed
 ==== Default keys:
@@ -32,18 +32,23 @@ Keys for dates are converted to localized short date format
 
 =end
 
+# https://gist.github.com/ttscoff/0be33bf2cace95ff26fd787da25df239
+# 2021-10-20
+
 CONFIG = {
-  :use_imgcat => true,
+  :show_icon => true,
   :keys => {
     'location' => 'Location',
     'kMDItemCFBundleIdentifier' => 'Bundle ID',
+    'kMDItemAlternateNames' => 'Alternate Names',
     'kMDItemPhysicalSize' => 'Size',
     'kMDItemVersion' => 'Version',
     'kMDItemContentCreationDate' => 'Released',
     'kMDItemAppStorePurchaseDate' => 'Purchased',
     'kMDItemLastUsedDate' => 'Last Used',
     'kMDItemAppStoreCategory' => 'Category',
-    'kMDItemCopyright' => 'Copyright'
+    'kMDItemCopyright' => 'Copyright',
+    'kMDItemExecutableArchitectures' => 'Architecture'
   }
 }
 
@@ -83,21 +88,41 @@ end
 
 def find_app(app)
   location = nil
-  res = %x{mdfind 'kind:app filename:"#{app}"' | grep -E '\.app$' | head -n 1}
+  narrow = ' -onlyin /System/Applications -onlyin /Applications -onlyin /Applications/Setapp -onlyin /Applications/Utilities -onlyin /Developer/Applications'
+  res = `mdfind#{narrow} 'kind:app filename:"#{app}"' | grep -E '\.app$' | head -n 1`.strip
+  unless res && res.length > 0
+    res = `mdfind 'kind:app filename:"#{app}"' | grep -E '\.app$' | head -n 1`.strip
+  end
+
   if class_exists? 'Encoding'
     res = res.force_encoding('utf-8')
   end
-  if res && res.length > 0
-    location = res.strip
+
+  return res && !res.empty? ? res.strip : false
+end
+
+def exec_available(cli)
+  if File.exist?(File.expand_path(cli))
+    File.executable?(File.expand_path(cli))
+  else
+    system "which #{cli}", out: File::NULL, err: File::NULL
   end
-  return location.nil? ? false : location
 end
 
 def show_icon(app_path)
-  if CONFIG[:use_imgcat] && File.exists?('/usr/local/bin/imgcat')
-    app_icon = %x{defaults read "#{app_path}/Contents/Info" CFBundleIconFile}.strip.sub(/(\.icns)?$/,'.icns')
-    res = %x{mkdir -p ${TMPDIR}appinfo && sips -s format png --resampleHeightWidthMax 125 "#{app_path}/Contents/Resources/#{app_icon}" --out "${TMPDIR}appinfo/#{app_icon}.png"} #  > /dev/null 2>&1
-    $stdout.puts %x{imgcat "${TMPDIR}appinfo/#{app_icon}.png"  && rm "${TMPDIR}appinfo/#{app_icon}.png"}
+  if CONFIG[:show_icon] && (exec_available('imgcat') || exec_available('chafa'))
+    app_icon = `defaults read "#{app_path}/Contents/Info" CFBundleIconFile`.strip.sub(/(\.icns)?$/, '.icns')
+
+    if exec_available('imgcat')
+      cmd = 'imgcat'
+    elsif exec_available('chafa')
+      cmd = 'chafa -s 15x15 -f iterm'
+    end
+
+    res = `mkdir -p ${TMPDIR}appinfo && sips -s format png --resampleHeightWidthMax 256 "#{app_path}/Contents/Resources/#{app_icon}" --out "${TMPDIR}appinfo/#{app_icon}.png"` #  > /dev/null 2>&1
+
+    $stdout.puts `#{cmd} "${TMPDIR}appinfo/#{app_icon}.png"  && rm "${TMPDIR}appinfo/#{app_icon}.png"`
+
   end
 end
 
@@ -106,16 +131,27 @@ def parse_info(info)
   if class_exists? 'Encoding'
     info = info.force_encoding('utf-8')
   end
-  info.split("\n").each {|line|
+
+  info.gsub!(/(\S+)\s*=\s*\((.*?)\)/m) do
+    m = Regexp.last_match
+    val = m[2].strip.split(/\n/).delete_if { |i| i.strip.empty? }.map { |l|
+      l.strip.gsub(/"/, '').sub(/,$/, '').sub(/x86_64/, 'Intel').sub(/arm64/, 'Apple Silicon')
+    }.join(', ')
+    val += " (Unviversal Binary)" if val =~ /Intel/ && val =~ /Apple Silicon/
+    values[m[1]] = val
+    ''
+  end
+
+  info.split(/\n/).delete_if(&:empty?).each do |line|
     sp = line.split(/\s*=\s*/)
-    values[sp[0]] = sp[1].gsub(/"/,'')
-  }
+    values[sp[0]] = sp[1].gsub(/"/, '')
+  end
   values
 end
 
 
 def get_info(appname)
-  app = appname.sub(/\.app$/,'')
+  app = appname # .sub(/\.app$/,'')
   found = find_app(app)
   if found
     keys = "-name " + CONFIG[:keys].keys.join(' -name ')
@@ -132,10 +168,11 @@ end
 def info(app)
   appinfo = get_info(app)
   if appinfo && appinfo.length > 0
+    show_icon(appinfo['location'])
     longest_key = CONFIG[:keys].values.longest_element
     CONFIG[:keys].each {|k,v|
       key = v
-      val = appinfo[k].strip
+      val = appinfo[k]&.strip || 'None'
       val = case k
       when /Size$/
         val.to_human
@@ -150,18 +187,16 @@ def info(app)
       val = val =~ /\(null\)/ ? "\033[0;36;40mUnknown\033[0m" : "\033[1;37;40m#{val}\033[0m"
       $stdout.puts "\033[0;32;40m%#{longest_key}s: %s" % [key, val]
     }
-    show_icon(appinfo['location'])
   end
 end
 
 def exit_help(code=0)
-  output =<<ENDOUT
-Shows keys from Spotlight data for an app
-Usage:
+  output = <<~ENDOUT
+    Shows keys from Spotlight data for an app
+    Usage:
 
-  #{File.basename(__FILE__)} [app name]
-
-ENDOUT
+      #{File.basename(__FILE__)} [app name]
+  ENDOUT
   puts output
   Process.exit code.to_i
 end
