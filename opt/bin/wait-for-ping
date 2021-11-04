@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [ $# -ne 1 ]; then
+	echo "usage: wait-for-ping <IP or domain>"
+	exit 1
+fi
+
+# from https://serverfault.com/questions/42021/how-to-ping-in-linux-until-host-is-known :
+ping_cancelled=false    # Keep track of whether the loop was cancelled, or succeeded
+until ping -c1 "$1" >/dev/null 2>&1; do :; done &    # The "&" backgrounds it
+trap "kill $!; ping_cancelled=true" SIGINT
+wait $!          # Wait for the loop to exit, one way or another
+trap - SIGINT    # Remove the trap, now we're done with it
+
+if [ $ping_cancelled == "false" ]; then
+	terminal-notifier -message "Ping $1 succeeded." -title "✅ $1"
+fi
