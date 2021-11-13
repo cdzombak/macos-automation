@@ -130,7 +130,7 @@ done
 echo ""
 cecho "/usr/local/bin/imgcat  ..." $cyan
 if [[ ! -e /usr/local/bin/imgcat ]]; then
-  ln -s "$HOME/opt/bin/imgcat" /usr/local/bin/imgcat
+  sudo ln -s "$HOME/opt/bin/imgcat" /usr/local/bin/imgcat
   cecho "✔ Installed." $green
 else
  cecho "✔ Already installed." $green
