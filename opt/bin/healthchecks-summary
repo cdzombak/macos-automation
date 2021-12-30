@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [ $# -eq 1 ]; then
+	if [ "$1" == "localhost" ]; then
+		if [ ! -x ~/.lightweight-healthcheck/summary.sh ]; then
+			echo "error: ~/.lightweight-healthcheck/summary.sh is missing"
+			exit 1
+		fi
+		~/.lightweight-healthcheck/summary.sh
+		exit
+	elif [ "$1" == "--help" ] || [ "$1" == "-h" ]; then
+		echo "usage: healthchecks-summary [hostname | localhost]"
+	else
+		ssh "$1" "TERM=$TERM ~/.lightweight-healthcheck/summary.sh"
+		echo ""
+		exit
+	fi
+fi
+
+hosts=( goliath-remote radarskill a2mi burr )
+for host in "${hosts[@]}"; do
+	ssh "$host" "TERM=$TERM ~/.lightweight-healthcheck/summary.sh"
+	echo ""
+done
