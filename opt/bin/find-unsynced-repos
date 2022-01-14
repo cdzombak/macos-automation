@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+set -eo pipefail
+
+function usage() {
+    echo "usage: find-unsynced-repos path/to/repos [--iterm]"
+    echo "Searches the given directory for Git repositories in a dirty state or with unpushed commits."
+    echo ""
+    echo "  -t --iterm  Open an iTerm tab for each discovered repo."
+    echo "  -h --help   Show usage information."
+    echo ""
+}
+
+if [ $# -lt 1 ]; then
+    usage
+    exit 1
+fi
+
+OPEN_ITERM=false
+if [ "$1" = "--help" ] || [ "$1" = '-h' ] || [ "$2" = "--help" ] || [ "$2" = '-h' ]; then
+    usage
+    exit
+elif [ "$2" = "--iterm" ] || [ "$2" = "-t" ]; then
+    OPEN_ITERM=true
+else
+    if [ -n "$2" ]; then
+        usage
+        exit 1
+    fi
+fi
+
+function unsynced_repos() {
+    if [ -d "${1}/.git" ]; then
+            local dirty=false
+            local unpushed=false
+            pushd "${1}" >/dev/null
+            if [ -n "$(git status --porcelain)" ]; then
+                dirty=true
+            fi
+            if [ $(git log --branches --not --remotes | wc -l) -gt 0 ] ; then
+                unpushed=true
+            fi
+            if [ $dirty == true ] || [ $unpushed == true ]; then
+                echo -n "${1}:  "
+                if [ $dirty == true ]; then echo -n "dirty "; fi
+                if [ $unpushed == true ]; then echo -n "unpushed"; fi
+                echo -ne "\n"
+
+                if [ $OPEN_ITERM == true ]; then
+                        osascript &>/dev/null <<EOF
+tell application "iTerm"
+    activate
+    tell current window to set tb to create tab with default profile
+    tell current session of current window to write text "cd \\"${1}\\""
+    tell current session of current window to write text "clear"
+    tell current session of current window to write text "git log --branches --not --remotes"
+    tell current session of current window to write text "git status"
+end tell
+EOF
+                fi
+            fi
+            popd >/dev/null
+        fi
+}
+
+function unsynced_repos_recurs() {
+    for file in "${1}"/*/ ; do
+        file=${file%*/}
+        unsynced_repos "${file}"
+        if [ -d "${file}" ] ; then
+            unsynced_repos_recurs "${file}"
+        fi
+    done
+}
+
+unsynced_repos "${1}"
+unsynced_repos_recurs "${1}"
