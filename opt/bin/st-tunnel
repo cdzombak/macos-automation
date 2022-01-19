@@ -19,6 +19,18 @@ case $1 in
     (sleep 1 && open "http://localhost:9997")&
     ssh -L 9997:localhost:8384 curie
     ;;
+  opportunity)
+    (sleep 1 && open "http://localhost:9996")&
+    ssh -L 9996:localhost:8384 opportunity
+    ;;
+  voyager)
+    (sleep 1 && open "http://localhost:9995")&
+    ssh -L 9995:localhost:8384 voyager
+    ;;
+  pi400)
+    (sleep 1 && open "http://localhost:9994")&
+    ssh -L 9994:localhost:8384 pi400
+    ;;
   *)
     echo "unknown machine name: $1"
     exit 1
