@@ -32,8 +32,9 @@ Keys for dates are converted to localized short date format
 
 =end
 
+# cdzombak:
+# Updated 2022-07-11 from:
 # https://gist.github.com/ttscoff/0be33bf2cace95ff26fd787da25df239
-# 2021-10-20
 
 CONFIG = {
   :show_icon => true,
@@ -110,13 +111,15 @@ def exec_available(cli)
 end
 
 def show_icon(app_path)
-  if CONFIG[:show_icon] && (exec_available('imgcat') || exec_available('chafa'))
+  if CONFIG[:show_icon] && (exec_available('imgcat') || exec_available('chafa')  || exec_available("kitty"))
     app_icon = `defaults read "#{app_path}/Contents/Info" CFBundleIconFile`.strip.sub(/(\.icns)?$/, '.icns')
 
     if exec_available('imgcat')
       cmd = 'imgcat'
     elsif exec_available('chafa')
       cmd = 'chafa -s 15x15 -f iterm'
+    elsif exec_available('kitty')
+      cmd = 'kitty +kitten icat --align=left'
     end
 
     res = `mkdir -p ${TMPDIR}appinfo && sips -s format png --resampleHeightWidthMax 256 "#{app_path}/Contents/Resources/#{app_icon}" --out "${TMPDIR}appinfo/#{app_icon}.png"` #  > /dev/null 2>&1
