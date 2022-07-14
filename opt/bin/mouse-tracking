@@ -40,4 +40,4 @@ fi
 echo "Setting mouse tracking speed to $SPD..."
 
 SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
-osascript "$SCRIPTPATH/_mousetracking.scpt" "$SPD"
+timeout 15s osascript "$SCRIPTPATH/_mousetracking.scpt" "$SPD" || echo "If this automation failed, note that AEServer and the active terminal application must be granted Accessibility access in System Preferences / Security and Privacy."
