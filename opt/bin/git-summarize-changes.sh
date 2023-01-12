@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+set -eu
+
+function usage() {
+    echo "usage: git summarize-changes [branchname]"
+    echo ""
+    echo "Prints a tidy list of commit hashes and titles on the current branch that aren't on the given branch."
+    echo "Handy for copy/pasting into a pull request."
+    echo ""
+    echo "If no branch name is given, the script will try to fall back to main, then master."
+    echo ""
+}
+
+BRANCH=""
+if [ $# -eq 1 ]; then
+    BRANCH="$1"
+elif [ $# -gt 1 ]; then
+    usage
+    exit 1
+elif git show-ref --quiet refs/heads/main; then
+    BRANCH=main
+elif git show-ref --quiet refs/heads/master; then
+    BRANCH=master
+else
+    usage
+    exit 1
+fi
+
+git log --pretty=format:'- (%h) %s' --abbrev-commit --reverse "$BRANCH".. | pbcopy
