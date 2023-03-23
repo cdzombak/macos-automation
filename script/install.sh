@@ -146,3 +146,10 @@ if [ -e "$HOME/opt/bin/curie-match" ]; then
 else
   echo "Nothing to do."
 fi
+
+if [ -e "$HOME/opt/bin/crop-msfs-screenshot" ]; then
+  echo "Legacy crop-msfs-screenshot script..."
+  trash "$HOME/opt/bin/crop-msfs-screenshot"
+else
+  echo "Nothing to do."
+fi
