@@ -18,7 +18,7 @@ if [ $# -eq 1 ]; then
 	fi
 fi
 
-hosts=( goliath-remote radarskill a2mi burr )
+hosts=( goliath-remote a2mi burr )
 for host in "${hosts[@]}"; do
 	ssh "$host" "TERM=$TERM ~/.lightweight-healthcheck/summary.sh"
 	echo ""
