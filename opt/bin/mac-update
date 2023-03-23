@@ -1,0 +1,220 @@
+#!/usr/bin/env bash
+set -u
+
+if [ "$(uname)" != "Darwin" ]; then
+  echo "Skipping macOS configuration because not on macOS"
+  exit 2
+fi
+
+xcode-select --install >/dev/null 2>&1
+exit_status=$?
+if [ $exit_status -ne 1 ]; then
+  echo "Try again once Xcode CLI tools are installed."
+  exit 1
+fi
+
+if [ -e "$HOME/.nvm/nvm.sh" ]; then
+  echo "nvm is installed and will be deactivated in this shell."
+  echo "This ensures that system-level node, installed directly by homebrew, is used to install/update packages globally."
+  # shellcheck disable=SC2162
+  read -p "Press [Enter] to continue..."
+  # shellcheck disable=SC1091
+  . "$HOME/.nvm/nvm.sh"
+  echo "+ npm deactivate"
+  nvm deactivate
+  echo "+ which node"
+  which node
+  echo "+ which npm"
+  which npm
+  echo ""
+fi
+
+echo "Homebrew ..."
+brew update
+brew upgrade
+
+echo ""
+echo "Mac App Store ..."
+bash -c "mas upgrade"
+
+set -e
+
+echo ""
+echo "SSH config ..."
+pushd "$HOME/.ssh" >/dev/null
+if [[ $(git status --porcelain) ]]; then
+  echo "[!] skipping due to dirty working tree:"
+  git status
+else
+  git pull --rebase
+  ./fix-permissions.sh
+fi
+popd >/dev/null
+
+echo ""
+echo "dotfiles ..."
+pushd "$HOME/.dotfiles" >/dev/null
+if [[ $(git status --porcelain) ]]; then
+  echo "[!] skipping due to dirty working tree:"
+  git status
+else
+  git pull --rebase
+  git sub update
+  terminal-notifier -message "Attention required." -title "mac-update"
+  ./macos-software-install.sh
+  echo ""
+  terminal-notifier -message "Attention required." -title "mac-update"
+  echo "Run post-install software configuration script? (y/N)"
+  read -r response
+  if [[ $response =~ ^([yY][eE][sS]|[yY])$ ]]; then
+    ./macos-configure-post-software-install.sh
+  fi
+  cd ./osx-automation
+  ./script/restore-resources.sh
+  env FORCE=true ./script/install.sh
+fi
+popd >/dev/null
+
+echo ""
+echo "windowstack2 ..."
+wget "https://raw.githubusercontent.com/cdzombak/windowstack2/main/windowstack.sh" -O "$HOME/opt/bin/windowstack"
+chmod +x "$HOME/opt/bin/windowstack"
+
+echo ""
+echo "Sublime Text config ..."
+pushd "$HOME/.config/sublimetext" >/dev/null
+if [[ $(git status --porcelain) ]]; then
+  echo "[!] skipping due to dirty working tree:"
+  git status
+else
+  git pull --rebase
+fi
+popd >/dev/null
+
+echo
+echo "npm -g ..."
+npm update -g
+
+echo
+echo "gems ..."
+GEMS=(bundler mdless)
+if [ -e /usr/local/bin/sqlint ]; then
+  GEMS+=(sqlint)
+fi
+for GEM in "${GEMS[@]}"
+do
+  sudo gem update "$GEM"
+done
+
+set +e
+
+if command -v gcloud >/dev/null; then
+  echo ""
+  echo "gcloud ..."
+  gcloud components update
+fi
+
+if command -v tldr >/dev/null; then
+  echo ""
+  echo "tldr (tealdeer) cache ..."
+  tldr --update
+fi
+
+echo ""
+echo "Rebuild Electron wrappers, with latest dependencies ..."
+
+_reinstall_loficafe() {
+  rm -rf "/Applications/Lofi Cafe.app"
+  rm -rf "$HOME/Applications/Lofi Cafe.app"
+  TMP_DIR=$(mktemp -d 2>/dev/null || mktemp -d -t 'lofi-cafe')
+  git clone "https://github.com/cdzombak/lofiapp.git" "$TMP_DIR"
+  pushd "$TMP_DIR"
+  make install-mac-homedir
+  make clean
+  popd
+}
+if [ -e "/Applications/Lofi Cafe.app" ] || [ -e "$HOME/Applications/Lofi Cafe.app" ]; then _reinstall_loficafe; fi
+
+_reinstall_instapaper_reader() {
+  rm -rf "/Applications/Instapaper Reader.app"
+  TMP_DIR=$(mktemp -d 2>/dev/null || mktemp -d -t 'instapaper-reader')
+  git clone "https://github.com/cdzombak/instapaper-reader.git" "$TMP_DIR"
+  pushd "$TMP_DIR"
+  make install-mac
+  make clean
+  popd
+}
+if [ -e "/Applications/Instapaper Reader.app" ]; then _reinstall_instapaper_reader; fi
+
+_reinstall_ecobee() {
+  rm -rf "/Applications/Ecobee.app"
+  TMP_DIR=$(mktemp -d 2>/dev/null || mktemp -d -t 'ecobee-app')
+  git clone "https://github.com/cdzombak/ecobee-app.git" "$TMP_DIR"
+  pushd "$TMP_DIR"
+  make install-mac
+  make clean
+  popd
+}
+if [ -e "/Applications/Ecobee.app" ]; then _reinstall_ecobee; fi
+
+_reinstall_octopi_wrapper() {
+  rm -rf "/Applications/OctoPi.dzhome.app"
+  TMP_DIR=$(mktemp -d 2>/dev/null || mktemp -d -t 'octopi')
+  git clone "https://github.com/cdzombak/octopi-app.git" "$TMP_DIR"
+  pushd "$TMP_DIR"
+  make install-mac
+  make clean
+  popd
+}
+if [ -e "/Applications/OctoPi.dzhome.app" ]; then _reinstall_octopi_wrapper; fi
+
+_reinstall_unifi_protect() {
+  rm -rf "/Applications/UniFi Protect.app"
+  TMP_DIR=$(mktemp -d 2>/dev/null || mktemp -d -t 'unifi-protect')
+  git clone "https://github.com/cdzombak/unifi-protect-app.git" "$TMP_DIR"
+  pushd "$TMP_DIR"
+  make install-mac
+  make clean
+  popd
+}
+if [ -e "/Applications/UniFi Protect.app" ]; then _reinstall_unifi_protect; fi
+
+_reinstall_json_viewer() {
+  rm -rf "/Applications/JSON Viewer.app"
+  rm -rf "$HOME/Applications/JSON Viewer.app"
+  TMP_DIR=$(mktemp -d 2>/dev/null || mktemp -d -t 'json-viewer')
+  git clone "git@github.com:cdzombak/jsonview.git" "$TMP_DIR"
+  pushd "$TMP_DIR/app"
+  make install-mac-homedir
+  make clean
+  popd
+}
+if [ -e "/Applications/JSON Viewer.app" ] || [ -e "$HOME/Applications/JSON Viewer.app" ]; then _reinstall_json_viewer; fi
+
+_reinstall_clock() {
+  rm -rf "/Applications/Clock.app" #nb. macOS Clock is actually in /System/Applications
+  rm -rf "$HOME/Applications/Clock.app"
+  TMP_DIR=$(mktemp -d 2>/dev/null || mktemp -d -t 'clockapp')
+  git clone "https://github.com/cdzombak/clock.git" "$TMP_DIR"
+  pushd "$TMP_DIR/app"
+  make install-mac-homedir
+  make clean
+  popd
+}
+if [ -e "/Applications/Clock.app" ] || [ -e "$HOME/Applications/Clock.app" ]; then _reinstall_clock; fi
+
+set -e
+
+echo ""
+echo "brew cleanup ..."
+brew cleanup
+
+terminal-notifier -message "Attention required." -title "mac-update"
+echo ""
+echo "Run \`brew doctor\`? (y/N)"
+read -r response
+if [[ $response =~ ^([yY][eE][sS]|[yY])$ ]]; then
+  set +e
+  brew doctor
+  set -e
+fi
