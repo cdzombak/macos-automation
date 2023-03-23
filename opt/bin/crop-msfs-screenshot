@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-set -euxo pipefail
-
-convert "$1" -crop 3440x1440+0+0 -quality 90 "${1/%png/jpg}"
-trash "$1"
