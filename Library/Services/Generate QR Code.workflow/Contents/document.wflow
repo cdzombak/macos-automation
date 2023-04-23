@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>AMApplicationBuild</key>
-	<string>409.1</string>
+	<string>521.1</string>
 	<key>AMApplicationVersion</key>
-	<string>2.5</string>
+	<string>2.10</string>
 	<key>AMDocumentVersion</key>
 	<string>2</string>
 	<key>actions</key>
@@ -59,27 +59,33 @@
 				<key>ActionParameters</key>
 				<dict>
 					<key>COMMAND_STRING</key>
-					<string>import sys
+					<string>/opt/homebrew/bin/python3 - &lt;&lt;'____HERE'
+
+import sys
 import subprocess
 import tempfile
 import urllib
+import urllib.parse
  
 text = sys.stdin.read()
  
 chart_url_template = ('http://chart.apis.google.com/chart?'
                       'cht=qr&amp;chs=300x300&amp;chl={data}&amp;chld=H|0')
-chart_url = chart_url_template.format(data=urllib.quote(text))
+chart_url = chart_url_template.format(data=urllib.parse.quote(text))
  
 with tempfile.NamedTemporaryFile(mode='w', suffix='.png') as f:
     subprocess.check_call(['curl', '-L', chart_url],
                           stdout=f, stderr=sys.stderr)
-    subprocess.check_call(['qlmanage', '-p', f.name])</string>
+    subprocess.check_call(['qlmanage', '-p', f.name])
+
+____HERE
+</string>
 					<key>CheckedForUserDefaultShell</key>
 					<true/>
 					<key>inputMethod</key>
 					<integer>0</integer>
 					<key>shell</key>
-					<string>/usr/bin/python</string>
+					<string>/bin/bash</string>
 					<key>source</key>
 					<string></string>
 				</dict>
@@ -133,9 +139,9 @@ with tempfile.NamedTemporaryFile(mode='w', suffix='.png') as f:
 					<key>1</key>
 					<dict>
 						<key>default value</key>
-						<string></string>
+						<false/>
 						<key>name</key>
-						<string>source</string>
+						<string>CheckedForUserDefaultShell</string>
 						<key>required</key>
 						<string>0</string>
 						<key>type</key>
@@ -146,9 +152,9 @@ with tempfile.NamedTemporaryFile(mode='w', suffix='.png') as f:
 					<key>2</key>
 					<dict>
 						<key>default value</key>
-						<false/>
+						<string></string>
 						<key>name</key>
-						<string>CheckedForUserDefaultShell</string>
+						<string>source</string>
 						<key>required</key>
 						<string>0</string>
 						<key>type</key>
@@ -183,14 +189,12 @@ with tempfile.NamedTemporaryFile(mode='w', suffix='.png') as f:
 						<string>4</string>
 					</dict>
 				</dict>
-				<key>conversionLabel</key>
-				<integer>0</integer>
 				<key>isViewVisible</key>
 				<true/>
 				<key>location</key>
-				<string>527.000000:253.000000</string>
+				<string>531.000000:305.000000</string>
 				<key>nibPath</key>
-				<string>/System/Library/Automator/Run Shell Script.action/Contents/Resources/English.lproj/main.nib</string>
+				<string>/System/Library/Automator/Run Shell Script.action/Contents/Resources/Base.lproj/main.nib</string>
 			</dict>
 			<key>isViewVisible</key>
 			<true/>
@@ -200,12 +204,154 @@ with tempfile.NamedTemporaryFile(mode='w', suffix='.png') as f:
 	<dict/>
 	<key>workflowMetaData</key>
 	<dict>
+		<key>applicationBundleIDsByPath</key>
+		<dict/>
+		<key>applicationPaths</key>
+		<array/>
+		<key>customImageFileData</key>
+		<data>
+		iVBORw0KGgoAAAANSUhEUgAAAZAAAAGQCAYAAACAvzbMAAAAAXNSR0IArs4c
+		6QAAAMRlWElmTU0AKgAAAAgABgESAAMAAAABAAEAAAEaAAUAAAABAAAAVgEb
+		AAUAAAABAAAAXgEoAAMAAAABAAIAAAExAAIAAAAVAAAAZodpAAQAAAABAAAA
+		fAAAAAAAAACQAAAAAQAAAJAAAAABUGl4ZWxtYXRvciBQcm8gMy4zLjIAAAAE
+		koYABwAAABIAAACyoAEAAwAAAAEAAQAAoAIABAAAAAEAAAGQoAMABAAAAAEA
+		AAGQAAAAAEFTQ0lJAAAAU2NyZWVuc2hvdBw9LwQAAAAJcEhZcwAAFiUAABYl
+		AUlSJPAAAAQWaVRYdFhNTDpjb20uYWRvYmUueG1wAAAAAAA8eDp4bXBtZXRh
+		IHhtbG5zOng9ImFkb2JlOm5zOm1ldGEvIiB4OnhtcHRrPSJYTVAgQ29yZSA2
+		LjAuMCI+CiAgIDxyZGY6UkRGIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5v
+		cmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyI+CiAgICAgIDxyZGY6RGVz
+		Y3JpcHRpb24gcmRmOmFib3V0PSIiCiAgICAgICAgICAgIHhtbG5zOnRpZmY9
+		Imh0dHA6Ly9ucy5hZG9iZS5jb20vdGlmZi8xLjAvIgogICAgICAgICAgICB4
+		bWxuczpleGlmPSJodHRwOi8vbnMuYWRvYmUuY29tL2V4aWYvMS4wLyIKICAg
+		ICAgICAgICAgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8x
+		LjAvIj4KICAgICAgICAgPHRpZmY6WVJlc29sdXRpb24+MTQ0MDAwMC8xMDAw
+		MDwvdGlmZjpZUmVzb2x1dGlvbj4KICAgICAgICAgPHRpZmY6UmVzb2x1dGlv
+		blVuaXQ+MjwvdGlmZjpSZXNvbHV0aW9uVW5pdD4KICAgICAgICAgPHRpZmY6
+		WFJlc29sdXRpb24+MTQ0MDAwMC8xMDAwMDwvdGlmZjpYUmVzb2x1dGlvbj4K
+		ICAgICAgICAgPHRpZmY6T3JpZW50YXRpb24+MTwvdGlmZjpPcmllbnRhdGlv
+		bj4KICAgICAgICAgPGV4aWY6UGl4ZWxYRGltZW5zaW9uPjQwMDwvZXhpZjpQ
+		aXhlbFhEaW1lbnNpb24+CiAgICAgICAgIDxleGlmOlVzZXJDb21tZW50Pgog
+		ICAgICAgICAgICA8cmRmOkFsdD4KICAgICAgICAgICAgICAgPHJkZjpsaSB4
+		bWw6bGFuZz0ieC1kZWZhdWx0Ij5TY3JlZW5zaG90PC9yZGY6bGk+CiAgICAg
+		ICAgICAgIDwvcmRmOkFsdD4KICAgICAgICAgPC9leGlmOlVzZXJDb21tZW50
+		PgogICAgICAgICA8ZXhpZjpQaXhlbFlEaW1lbnNpb24+NDAwPC9leGlmOlBp
+		eGVsWURpbWVuc2lvbj4KICAgICAgICAgPHhtcDpDcmVhdG9yVG9vbD5QaXhl
+		bG1hdG9yIFBybyAzLjMuMjwveG1wOkNyZWF0b3JUb29sPgogICAgICAgICA8
+		eG1wOk1ldGFkYXRhRGF0ZT4yMDIzLTA0LTIzVDEwOjEzOjE0LTA0OjAwPC94
+		bXA6TWV0YWRhdGFEYXRlPgogICAgICA8L3JkZjpEZXNjcmlwdGlvbj4KICAg
+		PC9yZGY6UkRGPgo8L3g6eG1wbWV0YT4KSMo6kwAAECxJREFUeAHt3cHKHTcW
+		hVHf8JPk/V+4bEjwRBPZaFulrdWj5lI5VWed4A8Pmv72zX8IECBAgAABAgQI
+		ECBAgAABAgQIECBAgAABAgQIECBAgAABAgQIECBAgAABAgQIECBAgAABAgQI
+		ECBAgAABAgQIECBAgAABAgQIECBAgAABAgQIECBAgAABAgQIECBAgAABAgQI
+		ECBAgAABAgQIECBAgAABAgQIECBAgAABAgQIECBAgAABAgQIECBAgAABAgQI
+		ECBAgAABAgQIECBAgAABAgQIECBAgAABAgQIECBAgAABAgQIECBAgAABAgQI
+		ECBAgAABAgQIECBAgAABAgQIECBAgAABAgQIECBAgMD7BD4v+KTnBd/gEwgQ
+		IHCiwNY/w/86Ucw3EyBAgMB+AQHZfwNfQIAAgSMFBOTIs/loAgQI7BcQkP03
+		8AUECBA4UkBAjjybjyZAgMB+AQHZfwNfQIAAgSMFBOTIs/loAgQI7BcQkP03
+		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
+		RU5ErkJggg==
+		</data>
+		<key>customImageFileExtension</key>
+		<string>png</string>
+		<key>inputTypeIdentifier</key>
+		<string>com.apple.Automator.text</string>
+		<key>outputTypeIdentifier</key>
+		<string>com.apple.Automator.nothing</string>
+		<key>presentationMode</key>
+		<integer>11</integer>
+		<key>processesInput</key>
+		<false/>
 		<key>serviceInputTypeIdentifier</key>
 		<string>com.apple.Automator.text</string>
 		<key>serviceOutputTypeIdentifier</key>
 		<string>com.apple.Automator.nothing</string>
 		<key>serviceProcessesInput</key>
-		<integer>0</integer>
+		<false/>
+		<key>useAutomaticInputType</key>
+		<false/>
 		<key>workflowTypeIdentifier</key>
 		<string>com.apple.Automator.servicesMenu</string>
 	</dict>
