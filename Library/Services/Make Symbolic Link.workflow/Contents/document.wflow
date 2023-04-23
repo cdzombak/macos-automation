@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>AMApplicationBuild</key>
-	<string>409.2</string>
+	<string>521.1</string>
 	<key>AMApplicationVersion</key>
-	<string>2.5</string>
+	<string>2.10</string>
 	<key>AMDocumentVersion</key>
 	<string>2</string>
 	<key>actions</key>
@@ -122,9 +122,9 @@ done</string>
 					<key>1</key>
 					<dict>
 						<key>default value</key>
-						<string></string>
+						<false/>
 						<key>name</key>
-						<string>source</string>
+						<string>CheckedForUserDefaultShell</string>
 						<key>required</key>
 						<string>0</string>
 						<key>type</key>
@@ -135,9 +135,9 @@ done</string>
 					<key>2</key>
 					<dict>
 						<key>default value</key>
-						<false/>
+						<string></string>
 						<key>name</key>
-						<string>CheckedForUserDefaultShell</string>
+						<string>source</string>
 						<key>required</key>
 						<string>0</string>
 						<key>type</key>
@@ -175,9 +175,9 @@ done</string>
 				<key>isViewVisible</key>
 				<true/>
 				<key>location</key>
-				<string>309.000000:253.000000</string>
+				<string>531.000000:305.000000</string>
 				<key>nibPath</key>
-				<string>/System/Library/Automator/Run Shell Script.action/Contents/Resources/English.lproj/main.nib</string>
+				<string>/System/Library/Automator/Run Shell Script.action/Contents/Resources/Base.lproj/main.nib</string>
 			</dict>
 			<key>isViewVisible</key>
 			<true/>
@@ -187,12 +187,68 @@ done</string>
 	<dict/>
 	<key>workflowMetaData</key>
 	<dict>
+		<key>applicationBundleIDsByPath</key>
+		<dict/>
+		<key>applicationPaths</key>
+		<array/>
+		<key>customImageFileData</key>
+		<data>
+		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
+		</data>
+		<key>customImageFileExtension</key>
+		<string>png</string>
+		<key>inputTypeIdentifier</key>
+		<string>com.apple.Automator.fileSystemObject</string>
+		<key>outputTypeIdentifier</key>
+		<string>com.apple.Automator.nothing</string>
+		<key>presentationMode</key>
+		<integer>15</integer>
+		<key>processesInput</key>
+		<false/>
 		<key>serviceInputTypeIdentifier</key>
 		<string>com.apple.Automator.fileSystemObject</string>
 		<key>serviceOutputTypeIdentifier</key>
 		<string>com.apple.Automator.nothing</string>
 		<key>serviceProcessesInput</key>
-		<integer>0</integer>
+		<false/>
+		<key>useAutomaticInputType</key>
+		<false/>
 		<key>workflowTypeIdentifier</key>
 		<string>com.apple.Automator.servicesMenu</string>
 	</dict>
