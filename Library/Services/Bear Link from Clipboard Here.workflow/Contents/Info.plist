@@ -12,7 +12,7 @@
 			<key>NSMenuItem</key>
 			<dict>
 				<key>default</key>
-				<string>Bearlink from Clipboard Here</string>
+				<string>Bear Link from Clipboard Here</string>
 			</dict>
 			<key>NSMessage</key>
 			<string>runWorkflowAsService</string>

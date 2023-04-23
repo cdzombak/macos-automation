@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>AMApplicationBuild</key>
-	<string>509</string>
+	<string>521.1</string>
 	<key>AMApplicationVersion</key>
 	<string>2.10</string>
 	<key>AMDocumentVersion</key>
@@ -64,7 +64,7 @@
 # ref: http://hints.macworld.com/article.php?story=20040111200114634
 
 projectName="$(osascript &lt;&lt;'END'
-on trim_line(this_text, trim_chars, trim_indicator)	-- 0 = beginning, 1 = end, 2 = both	set x to the length of the trim_chars	-- TRIM BEGINNING	if the trim_indicator is in {0, 2} then		repeat while this_text begins with the trim_chars			try				set this_text to (characters (x + 1) thru -1 of this_text) as string			on error				-- the text contains nothing but the trim characters				return ""			end try		end repeat	end if	-- TRIM ENDING	if the trim_indicator is in {1, 2} then		repeat while this_text ends with the trim_chars			try				set this_text to (characters 1 thru -(x + 1) of this_text) as string			on error				-- the text contains nothing but the trim characters				return ""			end try		end repeat	end if	return this_textend trim_lineif the clipboard does not start with "bear://" then	error "The clipboard does not contain a Bear link."end if	set previousClipboard to the clipboard	tell application "Bear" to activatetell application "System Events"	tell process "Bear"		keystroke "c" using command down
+on trim_line(this_text, trim_chars, trim_indicator)	-- 0 = beginning, 1 = end, 2 = both	set x to the length of the trim_chars	-- TRIM BEGINNING	if the trim_indicator is in {0, 2} then		repeat while this_text begins with the trim_chars			try				set this_text to (characters (x + 1) thru -1 of this_text) as string			on error				-- the text contains nothing but the trim characters				return ""			end try		end repeat	end if	-- TRIM ENDING	if the trim_indicator is in {1, 2} then		repeat while this_text ends with the trim_chars			try				set this_text to (characters 1 thru -(x + 1) of this_text) as string			on error				-- the text contains nothing but the trim characters				return ""			end try		end repeat	end if	return this_textend trim_lineif the clipboard does not start with "bear://" then	error "The clipboard does not contain a Bear link."end ifopen location (the clipboard)	set previousClipboard to the clipboardtell application "Bear" to activatetell application "System Events"	tell process "Bear"		keystroke "c" using command down
 		keystroke "h" using command down	end tellend tell	delay 0.2	set theParagraphs to paragraphs of (the clipboard)set the clipboard to previousClipboard	-- project name is the first line, minus Markdown headerset theProjectName to trim_line(item 1 of theParagraphs, "# ", 0)return theProjectName
 END
 )"
@@ -214,7 +214,7 @@ END
 				<key>isViewVisible</key>
 				<integer>1</integer>
 				<key>location</key>
-				<string>597.000000:1057.000000</string>
+				<string>531.000000:953.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Run Shell Script.action/Contents/Resources/Base.lproj/main.nib</string>
 			</dict>
