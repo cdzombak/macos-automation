@@ -170,14 +170,15 @@ if [ -e "/Applications/OctoPi.dzhome.app" ]; then _reinstall_octopi_wrapper; fi
 
 _reinstall_unifi_protect() {
   rm -rf "/Applications/UniFi Protect.app"
+  rm -rf "$HOME/Applications/UniFi Protect.app"
   TMP_DIR=$(mktemp -d 2>/dev/null || mktemp -d -t 'unifi-protect')
   git clone "https://github.com/cdzombak/unifi-protect-app.git" "$TMP_DIR"
   pushd "$TMP_DIR"
-  make install-mac
+  make install-mac-homedir
   make clean
   popd
 }
-if [ -e "/Applications/UniFi Protect.app" ]; then _reinstall_unifi_protect; fi
+if [ -e "/Applications/UniFi Protect.app" ] || [ -e "$HOME/Applications/UniFi Protect.app" ]; then _reinstall_unifi_protect; fi
 
 _reinstall_json_viewer() {
   rm -rf "/Applications/JSON Viewer.app"
