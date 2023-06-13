@@ -2,7 +2,7 @@
 
 # set env var FORCE=true to replace whatever's at the destination directory
 FORCE=${FORCE:false}
-if [[ "$FORCE" == "true" ]]; then
+if [[ "$FORCE" == "true" ]] || [[ "$FORCE" == "1" ]] ; then
   FORCE=true
 fi
 
