@@ -69,6 +69,7 @@ else
   if [[ $response =~ ^([yY][eE][sS]|[yY])$ ]]; then
     ./macos-configure-post-software-install.sh
   fi
+  ./macos-home-applications.sh
   cd ./osx-automation
   ./script/restore-resources.sh
   env FORCE=true ./script/install.sh
