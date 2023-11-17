@@ -1,0 +1,23 @@
+#!/usr/bin/env zsh
+
+if [[ $# -eq 0 ]]; then
+    result=$(git log | grep -i "co-authored-by:" | head -n 1 | xargs echo)
+    if [[ -z "$result" ]]; then
+        echo "[!] No previous Co-authored-by line found."
+        return 1
+    fi
+    echo "$result" | clipcopy
+    echo "[copied] $result"
+else
+    msg="$*"
+    result=$(git log | grep -i "co-authored-by:" | grep -i "$msg" | head -n 1 | xargs echo)
+    if [[ -z "$result" ]]; then
+        result=$(git log | grep -i "author:" | grep -i "$msg" | head -n 1 | xargs echo | sed 's/Author:/Co-authored-by:/')
+    fi
+    if [[ -z "$result" ]]; then
+        echo "[!] No previous Author or Co-authored-by line found containing '$msg'."
+        return 1
+    fi
+    echo "$result" | clipcopy
+    echo "[copied] $result"
+fi
