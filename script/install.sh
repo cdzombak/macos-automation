@@ -13,12 +13,12 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 source "$SCRIPT_DIR/lib/cecho"
 
 if [ "$(uname)" != "Darwin" ]; then
-  cecho "Skipping osx-automation installation because not on macOS" $red
+  cecho "Skipping macos-automation installation because not on macOS" $red
   exit 2
 fi
 
 cecho "----                             ----" $white
-cecho "---- osx-automation installation ----" $white
+cecho "---- macos-automation installation ----" $white
 cecho "----                             ----" $white
 echo ""
 
@@ -70,10 +70,23 @@ done
 # Install non-.workflow files in ~/Library/...:
 find Library -type f | grep --color=never -v -e "\.workflow$" -e "\.rsrc$" -e "\.workflow/" -e "\.gitkeep" -e "\.DS_Store" | while IFS="" read -r FILE; do
   echo ""
-  cecho "$FILE  ..." $cyan
+  echo "$FILE ..."
   SRC="$(pwd)/$FILE"
   DEST="$HOME/$FILE"
   mkdir -p "$HOME/$(dirname "$FILE")"
+
+  if [[ $FILE == *"to Chrome"* ]] && [ ! -e "/Applications/Google Chrome.app" ]; then
+    cecho "✔ Not needed; Google Chrome is not installed." $cyan
+    continue
+  fi
+  if [[ $FILE == *"to Firefox"* ]] && [ ! -e "/Applications/Firefox.app" ]; then
+    cecho "✔ Not needed; Firefox is not installed." $cyan
+    continue
+  fi
+  if [[ $FILE == *"to Day One"* ]] && [ ! -e "/Applications/Day One.app" ]; then
+    cecho "✔ Not needed; Day One is not installed." $cyan
+    continue
+  fi
 
   if [[ -r "$DEST" ]]; then
     if [ "$FORCE" = true ]; then
@@ -100,7 +113,8 @@ done
 # Install .workflow bundles in ~/Library/...:
 find Library -type d | grep --color=never "\.workflow$" | while IFS="" read -r FILE; do
   echo ""
-  cecho "$FILE  ..." $cyan
+  # shellcheck disable=SC2088
+  echo "~/$FILE ..."
   SRC="$(pwd)/$FILE"
   DEST="$HOME/$FILE"
   mkdir -p "$HOME/$(dirname "$FILE")"
@@ -140,16 +154,25 @@ echo ""
 cecho "--- Removing unused scripts/etc. ---" $white
 echo ""
 
-if [ -e "$HOME/opt/bin/curie-match" ]; then
-  echo "Legacy curie-match script..."
-  trash "$HOME/opt/bin/curie-match"
-else
-  echo "Nothing to do."
-fi
+declare -a TO_REMOVE=(
+  "$HOME/opt/bin/_mousetracking.scpt"
+  "$HOME/opt/bin/crop-msfs-screenshot"
+  "$HOME/opt/bin/crop-msfs-screenshot"
+  "$HOME/opt/bin/curie-match"
+  "$HOME/opt/bin/git-syncup"
+  "$HOME/opt/bin/healthchecks-summary"
+  "$HOME/opt/bin/mouse-tracking"
+  "$HOME/opt/bin/st-tunnel"
+  "$HOME/opt/bin/wait-for-ping"
+  "$HOME/opt/bin/wait-for-upload"
+)
 
-if [ -e "$HOME/opt/bin/crop-msfs-screenshot" ]; then
-  echo "Legacy crop-msfs-screenshot script..."
-  trash "$HOME/opt/bin/crop-msfs-screenshot"
-else
-  echo "Nothing to do."
-fi
+for F in "${TO_REMOVE[@]}"; do
+  echo -n "$F ... "
+  if [ -e "$F" ]; then
+    trash "$F"
+    cecho "✔ removed." $white
+  else
+    cecho "✔ nothing to do." $green
+  fi
+done

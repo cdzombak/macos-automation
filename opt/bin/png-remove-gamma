@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [ "$#" -eq 0 ]; then
+	echo "[!] Pass input file names as arguments."
+	exit 2
+fi
+
+for infname in "$@"; do
+	outfname="$(echo "$infname" | rev | cut -d '.' -f2- | rev).crushed.png"
+	echo "$infname -> $outfname ..."
+	pngcrush -rem cHRM -rem gAMA -rem iCCP -rem sRGB "$infname" "$outfname"
+done

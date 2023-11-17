@@ -10,8 +10,7 @@ if [ $# -eq 0 ]; then
     echo "usage: dropshadow image.ext [image2.ext ...]"
 fi
 
-for infile in "$@"
-do
+for infile in "$@"; do
     fname="${infile%.*}"
     convert "$infile" \( +clone -background black -shadow 80x20+0+15 \) +swap -background transparent -layers merge +repage "$fname-shadow.png"
 done

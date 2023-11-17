@@ -1,5 +1,10 @@
 #!/usr/bin/env zsh
 
+#
+# git cp-head:
+# Copy the current HEAD commit's SHA to your clopboard.
+#
+
 function _git_cph_clipcopy() {
   emulate -L zsh
   local file=$1

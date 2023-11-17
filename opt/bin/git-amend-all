@@ -1,4 +1,11 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -e
+
+#
+# git amend-all:
+# Add everything in the working tree, then amend the most recent commit
+# with it, without editing the commit message.
+#
+
 git add -A
 git commit --amend --no-edit
