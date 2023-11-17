@@ -1,11 +1,6 @@
-# OS X/macOS Automation (+ shell scripts & etc.)
+# macOS Automation (+ shell scripts & etc.)
 
-These are scripts, services, and other small utilities which I use to make life on macOS easier. I run them via:
-
-* OS X Services
-* [FastScripts](https://red-sweater.com/fastscripts/)
-* Scripting features built into [OmniGroup](https://www.omnigroup.com/) applications
-* CLI in conjunction with other tools
+These are scripts, services, and other small utilities which I use to make life on macOS easier.
 
 ## Repository Layout
 
@@ -17,14 +12,14 @@ Where documentation exists, it's located in a README in each folder, adjacent to
 
 ## See Also
 
-* My [dotfiles](https://github.com/cdzombak/dotfiles) & [Hammerspoon configuration](https://github.com/cdzombak/dotfiles/tree/master/hammerspoon/.hammerspoon)
+- My [dotfiles](https://github.com/cdzombak/dotfiles)
 
 ## Subsumed Repositories
 
 This repository subsumes the scripts I still use from two older repositories:
 
-* [osx-services](https://github.com/cdzombak/osx-services)
-* [omni-applescripts](https://github.com/cdzombak/omni-applescripts)
+- [osx-services](https://github.com/cdzombak/osx-services)
+- [omni-applescripts](https://github.com/cdzombak/omni-applescripts)
 
 ## License
 
