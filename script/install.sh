@@ -33,7 +33,7 @@ show_force_message() {
 # Install files under ~/opt, assumed to all be single files
 find opt -type f | grep --color=never -v -e "\.gitkeep" -e "\.DS_Store" | while IFS="" read -r FILE; do
   echo ""
-  cecho "$FILE  ..." $cyan
+  echo "~/$FILE  ..."
   SRC="$(pwd)/$FILE"
   DEST="$HOME/$FILE"
   mkdir -p "$HOME/$(dirname "$FILE")"
@@ -70,7 +70,7 @@ done
 # Install non-.workflow files in ~/Library/...:
 find Library -type f | grep --color=never -v -e "\.workflow$" -e "\.rsrc$" -e "\.workflow/" -e "\.gitkeep" -e "\.DS_Store" | while IFS="" read -r FILE; do
   echo ""
-  echo "$FILE ..."
+  echo "~/$FILE ..."
   SRC="$(pwd)/$FILE"
   DEST="$HOME/$FILE"
   mkdir -p "$HOME/$(dirname "$FILE")"
