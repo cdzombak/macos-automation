@@ -11,7 +11,7 @@ if [ "$(uname)" != "Darwin" ]; then
   exit 2
 fi
 
-cecho "---- osx-automation: restore resource forks ----" $white
+cecho "---- macos-automation: restore resource forks ----" $white
 echo ""
 
 cd "$SCRIPT_DIR/.." || exit 1

@@ -17,9 +17,9 @@ if [ "$(uname)" != "Darwin" ]; then
   exit 2
 fi
 
-cecho "----                             ----" $white
+cecho "----                               ----" $white
 cecho "---- macos-automation installation ----" $white
-cecho "----                             ----" $white
+cecho "----                               ----" $white
 echo ""
 
 cd "$SCRIPT_DIR/.." || exit 1

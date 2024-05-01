@@ -11,7 +11,7 @@ if [ "$(uname)" != "Darwin" ]; then
   exit 2
 fi
 
-cecho "---- osx-automation: assimilate scripts/binaries ----" $white
+cecho "---- macos-automation: assimilate scripts/binaries ----" $white
 echo ""
 
 cd "$SCRIPT_DIR/.." || exit 1
