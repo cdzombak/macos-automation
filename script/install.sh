@@ -10,6 +10,7 @@ set -uo pipefail
 IFS=$'\n\t'
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+# shellcheck source=script/lib/cecho
 source "$SCRIPT_DIR/lib/cecho"
 
 if [ "$(uname)" != "Darwin" ]; then
