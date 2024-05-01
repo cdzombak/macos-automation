@@ -87,6 +87,10 @@ find Library -type f | grep --color=never -v -e "\.workflow$" -e "\.rsrc$" -e "\
     cecho "✔ Not needed; Day One is not installed." $cyan
     continue
   fi
+  if [[ $FILE == *"xtool"* ]] && ! command -v xtool >/dev/null 2>&1; then
+    cecho "✔ Not needed; xtool is not installed." $cyan
+    continue
+  fi
 
   if [[ -r "$DEST" ]]; then
     if [ "$FORCE" = true ]; then
