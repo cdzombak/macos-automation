@@ -6,7 +6,7 @@ if [[ $# -eq 0 ]]; then
         echo "[!] No previous Co-authored-by line found."
         return 1
     fi
-    echo "$result" | clipcopy
+    echo "$result" | pbcopy
     echo "[copied] $result"
 else
     msg="$*"
@@ -18,6 +18,6 @@ else
         echo "[!] No previous Author or Co-authored-by line found containing '$msg'."
         return 1
     fi
-    echo "$result" | clipcopy
+    echo "$result" | pbcopy
     echo "[copied] $result"
 fi
