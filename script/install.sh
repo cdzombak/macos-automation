@@ -161,7 +161,6 @@ echo ""
 declare -a TO_REMOVE=(
   "$HOME/opt/bin/_mousetracking.scpt"
   "$HOME/opt/bin/crop-msfs-screenshot"
-  "$HOME/opt/bin/crop-msfs-screenshot"
   "$HOME/opt/bin/curie-match"
   "$HOME/opt/bin/git-syncup"
   "$HOME/opt/bin/healthchecks-summary"
