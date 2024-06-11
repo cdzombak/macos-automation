@@ -31,7 +31,7 @@ fi
 
 echo "Homebrew ..."
 brew update
-brew upgrade
+brew upgrade --greedy
 
 echo ""
 echo "Mac App Store ..."
