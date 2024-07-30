@@ -121,3 +121,23 @@ if [[ $response =~ ^([yY][eE][sS]|[yY])$ ]]; then
   brew doctor
   set -e
 fi
+
+terminal-notifier -message "Attention required." -title "mac-update"
+echo ""
+echo "Run \`docker system prune -a\`? (y/N)"
+echo "(note -a: remove all unused images not just dangling ones;"
+echo " decline to be asked about system prune without -a)"
+read -r response
+if [[ $response =~ ^([yY][eE][sS]|[yY])$ ]]; then
+  set +e
+  docker system prune -a
+  set -e
+else
+  echo "Run \`docker system prune\`? (y/N)"
+  read -r response
+  if [[ $response =~ ^([yY][eE][sS]|[yY])$ ]]; then
+    set +e
+    docker system prune
+    set -e
+  fi
+fi
