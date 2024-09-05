@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [ $# -eq 0 ]; then
+    >&2 echo "usage: dist-upload FILE [FILE2 ...]"
+    exit 1
+fi
+
+for F in "$@"; do
+    DST_FPATH="files/dist-upload/$(date +%Y%m%d)/$(openssl rand -hex 4)_$(basename "$F")"
+    b2 file upload --no-progress net-cdzombak-dist "$F" "$DST_FPATH"  >/dev/null
+    echo "https://dist.cdzombak.net/$DST_FPATH"
+done
