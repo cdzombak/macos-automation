@@ -7,7 +7,7 @@ function usage() {
     echo "Prints a tidy list of commit hashes and titles on the current branch that aren't on the given branch."
     echo "Handy for copy/pasting into a pull request."
     echo ""
-    echo "If no branch name is given, the script will try to fall back to main, then master."
+    echo "If no branch name is given, the script will try to fall back to develop, then main, then master."
     echo ""
 }
 
@@ -17,6 +17,8 @@ if [ $# -eq 1 ]; then
 elif [ $# -gt 1 ]; then
     usage
     exit 1
+elif git show-ref --quiet refs/heads/develop; then
+    BRANCH=develop
 elif git show-ref --quiet refs/heads/main; then
     BRANCH=main
 elif git show-ref --quiet refs/heads/master; then
