@@ -216,9 +216,9 @@ $additional_context"
 fi
 
 if command -v bat >/dev/null 2>&1; then
-  echo "$diff_output" | OLLAMA_HOST=https://jetstream.tailnet-003a.ts.net:7777 llm -m qwen2.5-coder:7b -s "$prompt" | bat --paging=never --style=plain --language=markdown
+  echo "$diff_output" | OLLAMA_HOST=https://jetstream.tailnet-003a.ts.net:7777 llm -m qwen2.5-coder:14b-instruct -o num_ctx 32768 -s "$prompt" | bat --paging=never --style=plain --language=markdown
 else
-  echo "$diff_output" | OLLAMA_HOST=https://jetstream.tailnet-003a.ts.net:7777 llm -m qwen2.5-coder:7b -s "$prompt"
+  echo "$diff_output" | OLLAMA_HOST=https://jetstream.tailnet-003a.ts.net:7777 llm -m qwen2.5-coder:14b-instruct -o num_ctx 32768 -s "$prompt"
 fi
 exit_status=${PIPESTATUS[1]}
 
