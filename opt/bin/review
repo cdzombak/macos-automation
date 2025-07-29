@@ -3,7 +3,7 @@ set -euo pipefail
 
 # https://github.com/llimllib/personal_code/blob/c85d6b2106e1369339d045e8be0e43484149848e/homedir/.local/bin/review
 # https://notes.billmill.org/blog/2025/07/An_AI_tool_I_find_useful.html
-# usage: review [git-diff-arguments...] [ | bat|mdcat ]
+# usage: review [git-diff-arguments...]
 
 function usage {
   cat <<EOF
