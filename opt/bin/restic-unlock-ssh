@@ -1,0 +1,167 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+readonly SCRIPT_NAME="$(basename "$0")"
+readonly SSH_CONFIG="$HOME/.ssh/config"
+readonly RESTIC_UNLOCK_CMD="sudo /etc/restic-backup/unlock.sh"
+
+usage() {
+    cat << EOF
+Usage: $SCRIPT_NAME [OPTIONS] [HOST]
+
+Select an SSH host from ~/.ssh/config using fzf and run restic unlock command.
+If HOST is provided, connect directly without interactive selection.
+
+OPTIONS:
+    -h, --help    Show this help message
+    -v, --verbose Enable verbose output
+
+ARGUMENTS:
+    HOST          SSH hostname to connect to directly (optional)
+
+EXAMPLES:
+    $SCRIPT_NAME                    # Interactive host selection
+    $SCRIPT_NAME mediactrpi         # Connect directly to mediactrpi
+    $SCRIPT_NAME --verbose myhost   # Connect to myhost with verbose output
+
+REQUIREMENTS:
+    - fzf must be installed (only for interactive mode)
+    - ~/.ssh/config must exist and contain Host entries
+    - SSH key authentication configured for target hosts
+EOF
+}
+
+log() {
+    if [[ "${VERBOSE:-0}" == "1" ]]; then
+        echo "[$(date +'%Y-%m-%d %H:%M:%S')] $*" >&2
+    fi
+}
+
+error() {
+    echo "Error: $*" >&2
+    exit 1
+}
+
+check_dependencies() {
+    local interactive_mode="$1"
+    
+    if [[ "$interactive_mode" == "true" ]] && ! command -v fzf >/dev/null 2>&1; then
+        error "fzf is not installed. Please install it first."
+    fi
+
+    if ! command -v ssh >/dev/null 2>&1; then
+        error "ssh is not available."
+    fi
+
+    if [[ ! -f "$SSH_CONFIG" ]]; then
+        error "SSH config file not found: $SSH_CONFIG"
+    fi
+}
+
+get_ssh_hosts() {
+    local hosts
+    hosts=$(awk '
+        /^Host / {
+            # Remove comments (everything after #)
+            gsub(/#.*/, "")
+            # Only use the first host alias (field 2)
+            if (NF >= 2 && $2 !~ /[*?]/ && $2 != "") {
+                print $2
+            }
+        }
+    ' "$SSH_CONFIG" | sort -u)
+
+    if [[ -z "$hosts" ]]; then
+        error "No hosts found in $SSH_CONFIG"
+    fi
+
+    echo "$hosts"
+}
+
+select_host() {
+    local hosts="$1"
+    local selected_host
+
+    selected_host=$(echo "$hosts" | fzf \
+        --prompt="Select SSH host: " \
+        --height=40% \
+        --border)
+
+    if [[ -z "$selected_host" ]]; then
+        error "No host selected"
+    fi
+
+    echo "$selected_host"
+}
+
+execute_unlock() {
+    local host="$1"
+    
+    log "Connecting to $host..."
+    log "Executing: $RESTIC_UNLOCK_CMD"
+
+    if ! ssh "$host" "$RESTIC_UNLOCK_CMD"; then
+        error "Failed to execute unlock command on $host"
+    fi
+
+    echo "Successfully executed unlock command on $host"
+}
+
+validate_host() {
+    local host="$1"
+    local hosts="$2"
+    
+    if ! echo "$hosts" | grep -q "^${host}$"; then
+        error "Host '$host' not found in $SSH_CONFIG. Available hosts:$(echo; echo "$hosts")"
+    fi
+}
+
+main() {
+    local hosts selected_host target_host
+    local interactive_mode=true
+    
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            -h|--help)
+                usage
+                exit 0
+                ;;
+            -v|--verbose)
+                readonly VERBOSE=1
+                shift
+                ;;
+            -*)
+                error "Unknown option: $1. Use --help for usage information."
+                ;;
+            *)
+                target_host="$1"
+                interactive_mode=false
+                shift
+                ;;
+        esac
+    done
+
+    log "Starting $SCRIPT_NAME"
+    
+    check_dependencies "$interactive_mode"
+    
+    log "Reading SSH hosts from $SSH_CONFIG"
+    hosts=$(get_ssh_hosts)
+    log "Found $(echo "$hosts" | wc -l) hosts"
+    
+    if [[ "$interactive_mode" == "true" ]]; then
+        selected_host=$(select_host "$hosts")
+        log "Selected host: $selected_host"
+    else
+        validate_host "$target_host" "$hosts"
+        selected_host="$target_host"
+        log "Using specified host: $selected_host"
+    fi
+    
+    execute_unlock "$selected_host"
+}
+
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    main "$@"
+fi
