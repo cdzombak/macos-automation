@@ -61,15 +61,7 @@ else
   git pull --rebase
   git sub update
   terminal-notifier -message "Attention required." -title "mac-update"
-  ./mac/software-install.sh
-  echo ""
-  terminal-notifier -message "Attention required." -title "mac-update"
-  echo "Run post-install software configuration script? (y/N)"
-  read -r response
-  if [[ $response =~ ^([yY][eE][sS]|[yY])$ ]]; then
-    ./mac/configure-post-software-install.sh
-  fi
-  ./mac/home-applications.sh
+  ./mac/software-suite.sh
   ./macos-automation/script/restore-resources.sh
   env FORCE=true ./macos-automation/script/install.sh
 fi
