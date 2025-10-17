@@ -1,0 +1,163 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() {
+  cat <<'EOF'
+Usage: newt [-b] <branch>
+       newt -c
+
+Create a git worktree rooted in <repo>/.newt/<branch>, with slashes in the
+branch name replaced by hyphens. Use -b to create the worktree on a new branch.
+Use -c to remove worktrees whose branches no longer exist.
+EOF
+  exit 1
+}
+
+create_branch=false
+do_cleanup=false
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -b)
+      create_branch=true
+      shift
+      ;;
+    -c)
+      do_cleanup=true
+      shift
+      ;;
+    -h|--help)
+      usage
+      ;;
+    --)
+      shift
+      break
+      ;;
+    -*)
+      echo "Error: unknown option $1" >&2
+      usage
+      ;;
+    *)
+      break
+      ;;
+  esac
+done
+
+if $do_cleanup && $create_branch; then
+  echo "Error: -b and -c cannot be combined." >&2
+  usage
+fi
+
+if ! repo_root="$(git rev-parse --show-toplevel 2>/dev/null)"; then
+  echo "Error: not inside a git repository." >&2
+  exit 1
+fi
+
+# Ensure .newt is excluded from the repo.
+exclude_file="${repo_root}/.git/info/exclude"
+ensure_newt_excluded() {
+  if [[ -f "$exclude_file" ]] && grep -Fxq ".newt" "$exclude_file"; then
+    return
+  fi
+
+  if (cd "$repo_root" && git exclude .newt >/dev/null 2>&1); then
+    return
+  fi
+
+  mkdir -p "$(dirname "$exclude_file")"
+  {
+    echo ""
+    echo ".newt"
+  } >> "$exclude_file"
+}
+
+ensure_newt_excluded
+
+cleanup_stale_worktrees() {
+  local worktree_base="${repo_root}/.newt"
+
+  if [[ ! -d "$worktree_base" ]]; then
+    echo "No worktrees to clean."
+    return
+  fi
+
+  declare -A branch_for_path=()
+  local current_path=""
+  local line=""
+  while IFS= read -r line; do
+    case "$line" in
+      worktree\ *)
+        current_path="${line#worktree }"
+        ;;
+      branch\ *)
+        branch_for_path["$current_path"]="${line#branch }"
+        ;;
+    esac
+  done < <(git -C "$repo_root" worktree list --porcelain)
+
+  shopt -s nullglob
+  local cleaned=0
+  local path=""
+  for path in "${worktree_base}"/*; do
+    [[ -d "$path" ]] || continue
+    local branch="${branch_for_path["$path"]-}"
+    if [[ -z "$branch" ]] || [[ "$branch" == "("* ]]; then
+      continue
+    fi
+
+    if git -C "$repo_root" rev-parse --verify --quiet "${branch}^{commit}" >/dev/null 2>&1; then
+      continue
+    fi
+
+    if git -C "$repo_root" worktree remove --force "$path" >/dev/null 2>&1; then
+      echo "Removed stale worktree at $path (branch: $branch)"
+      cleaned=$((cleaned + 1))
+    else
+      echo "Warning: failed to remove worktree at $path" >&2
+    fi
+  done
+  shopt -u nullglob
+
+  if [[ $cleaned -eq 0 ]]; then
+    echo "No stale worktrees found."
+  else
+    echo "Removed $cleaned stale worktree(s)."
+  fi
+}
+
+if $do_cleanup; then
+  if [[ $# -ne 0 ]]; then
+    usage
+  fi
+  cleanup_stale_worktrees
+  exit 0
+fi
+
+if [[ $# -ne 1 ]]; then
+  usage
+fi
+
+branch_name="$1"
+sane_branch="${branch_name//\//-}"
+worktree_dir="${repo_root}/.newt/${sane_branch}"
+
+mkdir -p "${repo_root}/.newt"
+
+if [[ -e "$worktree_dir" ]]; then
+  echo "Error: worktree directory ${worktree_dir} already exists." >&2
+  exit 1
+fi
+
+git_cmd=(git -C "$repo_root" worktree add)
+if $create_branch; then
+  git_cmd+=(-b "$branch_name")
+  git_cmd+=("$worktree_dir")
+else
+  git_cmd+=("$worktree_dir" "$branch_name")
+fi
+
+"${git_cmd[@]}"
+
+cd "$worktree_dir"
+
+exec "${SHELL:-/bin/sh}"
