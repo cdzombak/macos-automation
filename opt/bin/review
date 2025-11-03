@@ -155,7 +155,7 @@ fi
 # I wish there were a simple consistent method to count tokens, but there isn't
 # as far as I can tell, so we're gonna use a poor estimation and keep safely
 # inside the context limit
-max_tokens=50000  # Claude's limit is 100k, this should be a safe amount
+max_tokens=200000  # GPT-5-Codex limit is 400k; this should be a safe amount
 chars_per_token=4 # simple approximation
 
 # Estimate token count and reduce context if needed
@@ -216,9 +216,9 @@ $additional_context"
 fi
 
 if command -v bat >/dev/null 2>&1; then
-  echo "$diff_output" | OLLAMA_HOST=https://jetstream.tailnet-003a.ts.net:7777 llm -m qwen2.5-coder:14b-instruct -o num_ctx 32768 -s "$prompt" | bat --paging=never --style=plain --language=markdown
+  echo "$diff_output" | llm -m openrouter/openai/gpt-5-codex -s "$prompt" | bat --paging=never --style=plain --language=markdown
 else
-  echo "$diff_output" | OLLAMA_HOST=https://jetstream.tailnet-003a.ts.net:7777 llm -m qwen2.5-coder:14b-instruct -o num_ctx 32768 -s "$prompt"
+  echo "$diff_output" | llm -m openrouter/openai/gpt-5-codex -s "$prompt"
 fi
 exit_status=${PIPESTATUS[1]}
 
