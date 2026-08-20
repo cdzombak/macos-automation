@@ -1,4 +1,4 @@
-#/usr/bin/env bash
+#!/usr/bin/env bash
 set -eo pipefail
 
 # ref: http://hints.macworld.com/article.php?story=20040111200114634

@@ -7,5 +7,13 @@ set -e
 # with it, without editing the commit message.
 #
 
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    echo "usage: git amend-all"
+    echo ""
+    echo "Stages everything in the working tree (git add -A), then amends the most"
+    echo "recent commit with it, without editing the commit message."
+    exit 0
+fi
+
 git add -A
 git commit --amend --no-edit

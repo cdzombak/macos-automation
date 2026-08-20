@@ -5,6 +5,13 @@
 # Copy the current HEAD commit's SHA to your clopboard.
 #
 
+if [[ "$1" == "-h" || "$1" == "--help" ]]; then
+  echo "usage: git cp-head"
+  echo ""
+  echo "Prints the current HEAD commit's SHA and copies it to the clipboard."
+  return 0
+fi
+
 function _git_cph_clipcopy() {
   emulate -L zsh
   local file=$1

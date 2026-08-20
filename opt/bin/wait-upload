@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if [ $# -ne 1 ]; then
-    echo "usage: wait-for-upload URL"
-    exit 1
+if [ $# -ne 1 ] || [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    echo "usage: wait-upload URL" >&2
+    echo "Polls the given URL until it responds successfully, then sends a notification." >&2
+    if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then exit 0; else exit 1; fi
 fi
 
 while ! curl -s -f --head "$1" ; do

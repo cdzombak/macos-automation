@@ -6,8 +6,11 @@ if ! command -v convert >/dev/null; then
     exit 1
 fi
 
-if [ $# -eq 0 ]; then
+if [ $# -eq 0 ] || [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     echo "usage: dropshadow image.ext [image2.ext ...]"
+    echo ""
+    echo "Adds a drop shadow to each given image, writing image.shadow.png alongside it."
+    if [ $# -eq 0 ]; then exit 1; else exit 0; fi
 fi
 
 for infile in "$@"; do

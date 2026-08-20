@@ -12,7 +12,10 @@ function usage() {
 }
 
 BRANCH=""
-if [ $# -eq 1 ]; then
+if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then
+    usage
+    exit 0
+elif [ $# -eq 1 ]; then
     BRANCH="$1"
 elif [ $# -gt 1 ]; then
     usage

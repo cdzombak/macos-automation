@@ -1,5 +1,15 @@
 #!/usr/bin/env zsh
 
+if [[ "$1" == "-h" || "$1" == "--help" ]]; then
+    echo "usage: coauth [search text]"
+    echo ""
+    echo "Copies a 'Co-authored-by:' trailer to the clipboard, for pasting into a commit message."
+    echo "With no argument, copies the most recent Co-authored-by line found in git log."
+    echo "With a search text argument, copies the most recent Co-authored-by (or Author, rewritten"
+    echo "as Co-authored-by) line whose text matches."
+    return 0
+fi
+
 if [[ $# -eq 0 ]]; then
     result=$(git log | grep -i "co-authored-by:" | head -n 1 | xargs echo)
     if [[ -z "$result" ]]; then
