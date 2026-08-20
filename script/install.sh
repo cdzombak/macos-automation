@@ -166,6 +166,7 @@ declare -a TO_REMOVE=(
   "$HOME/opt/bin/healthchecks-summary"
   "$HOME/opt/bin/mouse-tracking"
   "$HOME/opt/bin/png-remove-gamma"
+  "$HOME/opt/bin/reload-browser"
   "$HOME/opt/bin/review"
   "$HOME/opt/bin/st-tunnel"
   "$HOME/opt/bin/wait-for-ping"
